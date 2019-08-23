@@ -1,8 +1,8 @@
 defmodule ExCorreios do
   @moduledoc false
 
-  alias Correios.Request.Client
-  alias Correios.Shipping.{Package, Service, Shipping}
+  alias ExCorreios.Request.Client
+  alias ExCorreios.Shipping.{Package, Service, Shipping}
 
   @package_keys [:format, :height, :length, :weight, :width]
   @default_values %{
@@ -16,8 +16,6 @@ defmodule ExCorreios do
     weight: 0.0,
     width: 0.0
   }
-
-  alias Correios.Shipping.Package
 
   def calculate(services, params) do
     services

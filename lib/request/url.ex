@@ -1,4 +1,4 @@
-defmodule Correios.Request.Url do
+defmodule ExCorreios.Request.Url do
   @moduledoc false
 
   @base_url "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx"

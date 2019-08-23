@@ -1,4 +1,4 @@
-defmodule Correios.Request.Response do
+defmodule ExCorreios.Request.Response do
   @moduledoc false
 
   import SweetXml, only: [transform_by: 2, sigil_x: 2, xpath: 3]

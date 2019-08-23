@@ -1,4 +1,4 @@
-defmodule Correios.Shipping.Service do
+defmodule ExCorreios.Shipping.Service do
   @available_services [
     pac: %{code: "04510", name: "PAC", description: "PAC sem contrato"},
     pac_com_contrato: %{code: "41068", name: "PAC", description: "PAC com contrato"},

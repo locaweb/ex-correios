@@ -1,7 +1,7 @@
-defmodule Correios.Request.Client do
+defmodule ExCorreios.Request.Client do
   @moduledoc false
 
-  alias Correios.Request.{Response, Url}
+  alias ExCorreios.Request.{Response, Url}
 
   def get(shipping) do
     shipping

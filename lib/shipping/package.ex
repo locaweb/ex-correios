@@ -1,9 +1,9 @@
-defmodule Correios.Shipping.Package do
+defmodule ExCorreios.Shipping.Package do
   @moduledoc false
 
   @enforce_keys [:format]
 
-  defstruct diameter: 0, format: nil, height: 0, length: 0, weight: 0, width: 0
+  defstruct [:diameter, :format, :height, :length, :weight, :width]
 
   @formats %{package_box: 1, roll_prism: 2, envelope: 3}
 
