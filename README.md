@@ -1,21 +1,21 @@
-# ExCorreios
+# Correios
 
-**TODO: Add description**
+An elixir client to consume correios API.
 
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `ex_correios` to your list of dependencies in `mix.exs`:
+by adding `correios` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:ex_correios, "~> 0.1.0"}
+    {:correios, "~> 0.1.0"}
   ]
 end
 ```
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/ex_correios](https://hexdocs.pm/ex_correios).
+be found at [https://hexdocs.pm/correios](https://hexdocs.pm/correios).
 
