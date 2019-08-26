@@ -20,7 +20,8 @@ defmodule ExCorreios.Request.Response do
     value_without_additionals: transform_by(~x"//ValorSemAdicionais/text()"s, &String.to_float/1)
   ]
 
-  @spec process(%HTTPotion.Response{}) :: {:ok, map()} | {:ok , list(struct)} | {:error, String.t()}
+  @spec process(%HTTPotion.Response{}) ::
+          {:ok, map()} | {:ok, list(struct)} | {:error, String.t()}
   def process(response) do
     case response do
       %HTTPotion.Response{status_code: 200, body: body} -> {:ok, parser(body)}

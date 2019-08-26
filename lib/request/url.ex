@@ -8,7 +8,8 @@ defmodule ExCorreios.Request.Url do
   def build(shipping), do: "#{@base_url}?#{format_params(shipping)}"
 
   defp format_params(%{package: package} = shipping) do
-    "nCdEmpresa=#{shipping.enterprise}&" <> "sDsSenha=#{shipping.password}&" <>
+    "nCdEmpresa=#{shipping.enterprise}&" <>
+      "sDsSenha=#{shipping.password}&" <>
       "nCdServico=#{format_services(shipping.services)}&" <>
       "sCepOrigem=#{shipping.origin}&" <>
       "sCepDestino=#{shipping.destination}&" <>

@@ -6,8 +6,8 @@ defmodule ExCorreios.Request.Client do
   @spec get(struct()) :: tuple()
   def get(shipping) do
     shipping
-    |> Url.build
+    |> Url.build()
     |> HTTPotion.get()
-    |> Response.process
+    |> Response.process()
   end
 end

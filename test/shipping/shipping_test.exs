@@ -3,16 +3,23 @@ defmodule ExCorreios.Shipping.ShippingTest do
 
   alias ExCorreios.Shipping.Shipping
 
-  describe "Shipping.get_format/1" do
+  describe "Shipping.new/2" do
     test "returns a shipping struct" do
-      assert %Shipping{destination: "08720002", origin: "08720003", services: ["09123"], package: %{}}
+      assert %Shipping{} =
+               Shipping.new(:pac, %{
+                 format: :package_box,
+                 destination: "06666666",
+                 origin: "03333333"
+               })
     end
 
     test "raises an error when building struct and format key was not given" do
-      error_message = "the following keys must also be given when building struct ExCorreios.Shipping.Shipping: [:destination, :package, :origin, :services]"
-      content = quote(do: %Shipping{})
+      error_message =
+        "the following keys must also be given when building struct ExCorreios.Shipping.Shipping: [:destination, :origin]"
 
-      assert_raise ArgumentError, error_message, fn -> Code.eval_quoted(content) end
+      assert_raise ArgumentError, error_message, fn ->
+        Shipping.new(:pac, %{format: :package_box})
+      end
     end
   end
 end
