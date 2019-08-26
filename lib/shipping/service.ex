@@ -51,7 +51,9 @@ defmodule ExCorreios.Shipping.Service do
     }
   ]
 
+  @spec get_service(atom()) :: map()
   def get_service(service), do: @available_services[service]
 
+  @spec get_services(list(atom)) :: list(tuple)
   def get_services(services), do: Enum.filter(@available_services, fn {k, _v} -> k in services end)
 end

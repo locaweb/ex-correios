@@ -2,7 +2,8 @@ defmodule ExCorreios do
   @moduledoc false
 
   alias ExCorreios.Request.Client
-  alias ExCorreios.Shipping.{Package, Service, Shipping}
+  alias ExCorreios.Shipping.Packages.{Format, Package}
+  alias ExCorreios.Shipping.{Service, Shipping}
 
   @package_keys [:format, :height, :length, :weight, :width]
   @default_values %{
@@ -41,7 +42,7 @@ defmodule ExCorreios do
     package_params =
       shipping_params
       |> Map.take(@package_keys)
-      |> Map.put(:format, Package.get_format(shipping_params.format))
+      |> Map.put(:format, Format.get(shipping_params.format))
 
     struct(Package, package_params)
   end

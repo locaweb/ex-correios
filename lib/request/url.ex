@@ -4,6 +4,7 @@ defmodule ExCorreios.Request.Url do
   @base_url "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx"
   @default_return "xml"
 
+  @spec build(struct()) :: String.t()
   def build(shipping), do: "#{@base_url}?#{format_params(shipping)}"
 
   defp format_params(%{package: package} = shipping) do

@@ -3,6 +3,7 @@ defmodule ExCorreios.Request.Client do
 
   alias ExCorreios.Request.{Response, Url}
 
+  @spec get(struct()) :: tuple()
   def get(shipping) do
     shipping
     |> Url.build
