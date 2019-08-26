@@ -1,4 +1,6 @@
 defmodule ExCorreios.Shipping.Shipping do
+  @moduledoc false
+
   @enforce_keys [:destination, :package, :origin, :services]
 
   defstruct [
