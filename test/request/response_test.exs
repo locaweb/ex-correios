@@ -7,7 +7,24 @@ defmodule ExCorreios.Request.ResponseTest do
   alias ExCorreios.Shipping.Service
 
   describe "Response.process/1" do
-    test "returns a processed response" do
+    setup do
+      bypass = Bypass.open()
+      base_url = "http://localhost:#{bypass.port}"
+
+      [base_url: base_url, bypass: bypass]
+    end
+
+    test "returns a processed response", %{base_url: base_url, bypass: bypass} do
+      response_body = """
+      <?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n<Servicos><cServico>
+      <Codigo>04510</Codigo><Valor>19,80</Valor><PrazoEntrega>5</PrazoEntrega>
+      <ValorSemAdicionais>19,80</ValorSemAdicionais><ValorMaoPropria>0,00</ValorMaoPropria>
+      <ValorAvisoRecebimento>0,00</ValorAvisoRecebimento>
+      <ValorValorDeclarado>0,00</ValorValorDeclarado><EntregaDomiciliar>S</EntregaDomiciliar>
+      <EntregaSabado>N</EntregaSabado><obsFim></obsFim><Erro>0</Erro>
+      <MsgErro></MsgErro></cServico></Servicos>
+      """
+
       expected_response =
         {:ok,
          %{
@@ -27,16 +44,36 @@ defmodule ExCorreios.Request.ResponseTest do
          }}
 
       shipping = build(:shipping)
+      url = Url.build(shipping, base_url)
 
-      response =
-        shipping
-        |> Url.build()
-        |> HTTPotion.get()
+      Bypass.expect(bypass, fn conn ->
+        Plug.Conn.send_resp(conn, 200, response_body)
+      end)
+
+      response = HTTPotion.get(url)
 
       assert Response.process(response) == expected_response
     end
 
-    test "returns a processed response when has more services" do
+    test "returns a processed response when has more services", %{
+      base_url: base_url,
+      bypass: bypass
+    } do
+      response_body = """
+      <?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n<Servicos><cServico>
+      <Codigo>04510</Codigo><Valor>19,80</Valor><PrazoEntrega>5</PrazoEntrega>
+      <ValorSemAdicionais>19,80</ValorSemAdicionais><ValorMaoPropria>0,00</ValorMaoPropria>
+      <ValorAvisoRecebimento>0,00</ValorAvisoRecebimento>
+      <ValorValorDeclarado>0,00</ValorValorDeclarado><EntregaDomiciliar>S</EntregaDomiciliar>
+      <EntregaSabado>N</EntregaSabado><obsFim></obsFim><Erro>0</Erro><MsgErro></MsgErro></cServico>
+      <cServico><Codigo>04014</Codigo><Valor>19,80</Valor><PrazoEntrega>2</PrazoEntrega>
+      <ValorSemAdicionais>19,80</ValorSemAdicionais><ValorMaoPropria>0,00</ValorMaoPropria>
+      <ValorAvisoRecebimento>0,00</ValorAvisoRecebimento>
+      <ValorValorDeclarado>0,00</ValorValorDeclarado><EntregaDomiciliar>S</EntregaDomiciliar>
+      <EntregaSabado>S</EntregaSabado><obsFim></obsFim><Erro>0</Erro><MsgErro></MsgErro></cServico>
+      </Servicos>
+      """
+
       expected_response =
         {:ok,
          [
@@ -74,11 +111,13 @@ defmodule ExCorreios.Request.ResponseTest do
 
       services = Service.get_services([:pac, :sedex])
       shipping = build(:shipping, %{services: services})
+      url = Url.build(shipping, base_url)
 
-      response =
-        shipping
-        |> Url.build()
-        |> HTTPotion.get()
+      Bypass.expect(bypass, fn conn ->
+        Plug.Conn.send_resp(conn, 200, response_body)
+      end)
+
+      response = HTTPotion.get(url)
 
       assert Response.process(response) == expected_response
     end

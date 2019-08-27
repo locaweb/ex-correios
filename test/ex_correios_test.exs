@@ -3,7 +3,27 @@ defmodule ExCorreiosTest do
   doctest ExCorreios
 
   describe "ExCorreios.calculate/2" do
-    test "returns shipping value calculated based in a service" do
+    setup do
+      bypass = Bypass.open()
+      base_url = "http://localhost:#{bypass.port}"
+
+      [base_url: base_url, bypass: bypass]
+    end
+
+    test "returns shipping value calculated based in a service", %{
+      base_url: base_url,
+      bypass: bypass
+    } do
+      response_body = """
+      <?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n<Servicos><cServico>
+      <Codigo>04510</Codigo><Valor>19,80</Valor><PrazoEntrega>5</PrazoEntrega>
+      <ValorSemAdicionais>19,80</ValorSemAdicionais><ValorMaoPropria>0,00</ValorMaoPropria>
+      <ValorAvisoRecebimento>0,00</ValorAvisoRecebimento>
+      <ValorValorDeclarado>0,00</ValorValorDeclarado><EntregaDomiciliar>S</EntregaDomiciliar>
+      <EntregaSabado>N</EntregaSabado><obsFim></obsFim><Erro>0</Erro>
+      <MsgErro></MsgErro></cServico></Servicos>
+      """
+
       expected_result =
         {:ok,
          %{
@@ -38,7 +58,11 @@ defmodule ExCorreiosTest do
         manually_entered: false
       }
 
-      assert ExCorreios.calculate(:pac, params) == expected_result
+      Bypass.expect(bypass, fn conn ->
+        Plug.Conn.send_resp(conn, 200, response_body)
+      end)
+
+      assert ExCorreios.calculate(:pac, params, base_url) == expected_result
     end
   end
 end

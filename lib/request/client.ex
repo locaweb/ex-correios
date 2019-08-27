@@ -1,12 +1,11 @@
 defmodule ExCorreios.Request.Client do
   @moduledoc false
 
-  alias ExCorreios.Request.{Response, Url}
+  alias ExCorreios.Request.Response
 
-  @spec get(struct()) :: tuple()
-  def get(shipping) do
-    shipping
-    |> Url.build()
+  @spec get(String.t()) :: tuple()
+  def get(url) do
+    url
     |> HTTPotion.get()
     |> Response.process()
   end
