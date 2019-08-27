@@ -1,4 +1,4 @@
-# Correios
+# ExCorreios
 
 An elixir client to consume correios API.
 
@@ -10,7 +10,7 @@ by adding `correios` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:correios, "~> 0.1.0"}
+    {:ex_correios, "~> 0.1.0"}
   ]
 end
 ```

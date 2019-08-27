@@ -1,11 +1,10 @@
 defmodule ExCorreios.Request.Url do
   @moduledoc false
 
-  @base_url "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx"
   @default_return "xml"
 
   @spec build(struct()) :: String.t()
-  def build(shipping), do: "#{@base_url}?#{format_params(shipping)}"
+  def build(shipping), do: "#{base_url()}?#{format_params(shipping)}"
 
   defp format_params(%{package: package} = shipping) do
     "nCdEmpresa=#{shipping.enterprise}&" <>
@@ -26,6 +25,8 @@ defmodule ExCorreios.Request.Url do
       "sCdAvisoRecebimento=#{shipping.receiving_alert}&" <>
       "StrRetorno=#{@default_return}"
   end
+
+  defp base_url, do: Application.get_env(:ex_correios, :base_url)
 
   defp format_services(services) when is_list(services) do
     services

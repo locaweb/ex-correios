@@ -30,7 +30,7 @@ defmodule ExCorreios.Shipping.Shipping do
   alias ExCorreios.Shipping.Packages.Package
   alias ExCorreios.Shipping.Service
 
-  @package_keys [:format, :height, :length, :weight, :width]
+  @package_keys [:diameter, :format, :height, :length, :weight, :width]
   @default_values %{declared_value: 0, manually_entered: false, receiving_alert: false}
 
   @spec new(atom() | list(), map()) :: %__MODULE__{}

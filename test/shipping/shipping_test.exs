@@ -13,6 +13,15 @@ defmodule ExCorreios.Shipping.ShippingTest do
                })
     end
 
+    test "returns a shipping struct with a service list" do
+      assert %Shipping{} =
+               Shipping.new([:pac, :sedex], %{
+                 format: :package_box,
+                 destination: "06666666",
+                 origin: "03333333"
+               })
+    end
+
     test "raises an error when building struct and format key was not given" do
       error_message =
         "the following keys must also be given when building struct ExCorreios.Shipping.Shipping: [:destination, :origin]"
