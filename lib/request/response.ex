@@ -1,5 +1,7 @@
 defmodule ExCorreios.Request.Response do
-  @moduledoc false
+  @moduledoc """
+  This module transforms a xml body of a http response into a map or a list of maps.
+  """
 
   import SweetXml, only: [transform_by: 2, sigil_x: 2, xpath: 3]
 

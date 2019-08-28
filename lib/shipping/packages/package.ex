@@ -1,5 +1,7 @@
 defmodule ExCorreios.Shipping.Packages.Package do
-  @moduledoc false
+  @moduledoc """
+  This module provides a package struct.
+  """
 
   @enforce_keys [:format]
 

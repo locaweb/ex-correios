@@ -1,5 +1,7 @@
 defmodule ExCorreios.Shipping.Shipping do
-  @moduledoc false
+  @moduledoc """
+  This module provides a shipping struct.
+  """
 
   @enforce_keys [:destination, :package, :origin, :services]
 

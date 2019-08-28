@@ -1,5 +1,7 @@
 defmodule ExCorreios.Request.Client do
-  @moduledoc false
+  @moduledoc """
+  This module provides a http interface to communicate with Correios API.
+  """
 
   alias ExCorreios.Request.Response
 

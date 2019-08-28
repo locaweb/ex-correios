@@ -1,5 +1,7 @@
 defmodule ExCorreios.Request.Url do
-  @moduledoc false
+  @moduledoc """
+  This module builds an url based on shipping informations.
+  """
 
   @default_return "xml"
 

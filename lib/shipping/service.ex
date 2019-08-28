@@ -1,5 +1,7 @@
 defmodule ExCorreios.Shipping.Service do
-  @moduledoc false
+  @moduledoc """
+  This module provides one or more services.
+  """
 
   @available_services [
     pac: %{code: "04510", name: "PAC", description: "PAC sem contrato"},
