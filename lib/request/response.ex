@@ -20,14 +20,11 @@ defmodule ExCorreios.Request.Response do
     value_without_additionals: transform_by(~x"//ValorSemAdicionais/text()"s, &String.to_float/1)
   ]
 
-  @spec process(%HTTPotion.Response{}) ::
-          {:ok, map()} | {:ok, list(struct)} | {:error, String.t()}
-  def process(response) do
-    case response do
-      %HTTPotion.Response{status_code: 200, body: body} -> {:ok, parser(body)}
-      %HTTPotion.ErrorResponse{message: message} -> {:error, message}
-    end
-  end
+  @spec process(%HTTPotion.Response{}) :: {:ok, map()} | {:ok, list(struct())}
+  def process(%HTTPotion.Response{status_code: 200, body: body}), do: {:ok, parser(body)}
+
+  @spec process(%HTTPotion.ErrorResponse{}) :: {:error, String.t()}
+  def process(%HTTPotion.ErrorResponse{message: reason}), do: {:error, reason}
 
   defp parser(body) do
     case xpath(body, %SweetXpath{path: @root_path, is_list: true}, @shipping_path) do

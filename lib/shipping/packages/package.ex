@@ -3,33 +3,22 @@ defmodule ExCorreios.Shipping.Packages.Package do
 
   @enforce_keys [:format]
 
-  defstruct [:diameter, :format, :height, :length, :weight, :width]
+  defstruct diameter: 0.0, format: nil, height: 0.0, length: 0.0, weight: 0.0, width: 0.0
 
   @type t :: %__MODULE__{
           diameter: float(),
-          format: Integer.t(),
+          format: integer(),
           height: float(),
           length: float(),
           weight: float(),
           width: float()
         }
 
-  @default_values %{
-    diameter: 0.0,
-    height: 0.0,
-    length: 0.0,
-    weight: 0.0,
-    width: 0.0
-  }
-
   alias ExCorreios.Shipping.Packages.Format
 
   @spec new(map()) :: %__MODULE__{}
   def new(params) do
-    package_params =
-      @default_values
-      |> Map.merge(params)
-      |> Map.update!(:format, &Format.get/1)
+    package_params = Map.update!(params, :format, &Format.get/1)
 
     struct!(__MODULE__, package_params)
   end

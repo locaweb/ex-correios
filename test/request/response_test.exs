@@ -121,5 +121,12 @@ defmodule ExCorreios.Request.ResponseTest do
 
       assert Response.process(response) == expected_response
     end
+
+    test "returns a processed failure response" do
+      expected_response = {:error, "req_timedout"}
+      response = %HTTPotion.ErrorResponse{message: "req_timedout"}
+
+      assert Response.process(response) == expected_response
+    end
   end
 end

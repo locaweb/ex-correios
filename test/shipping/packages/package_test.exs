@@ -9,8 +9,7 @@ defmodule ExCorreios.Shipping.Packages.PackageTest do
     end
 
     test "raises an error when building struct and format key was not given" do
-      error_message =
-        "key :format not found in: %{diameter: 0.0, height: 0.0, length: 0.0, weight: 0.0, width: 0.0}"
+      error_message = "key :format not found in: %{}"
 
       assert_raise KeyError, error_message, fn -> Package.new(%{}) end
     end

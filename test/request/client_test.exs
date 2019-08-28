@@ -53,8 +53,5 @@ defmodule ExCorreios.Request.ClientTest do
 
       assert Client.get(url) == expected_response
     end
-
-    test "returns the failure request result" do
-    end
   end
 end
