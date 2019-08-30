@@ -11,13 +11,15 @@ defmodule ExCorreios do
 
   ## Examples
 
-      iex> shipping_params = %{
+      iex> package_item = ExCorreios.Shipping.Packages.PackageItem.new(%{
       ...>  diameter: 40,
-      ...>  format: :package_box,
       ...>  width: 11.0,
       ...>  height: 2.0,
       ...>  length: 16.0,
       ...>  weight: 0.9,
+      ...> })
+      iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, package_item)
+      iex> shipping_params = %{
       ...>  destination: "05724005",
       ...>  origin: "08720030",
       ...>  enterprise: "",
@@ -26,7 +28,7 @@ defmodule ExCorreios do
       ...>  declared_value: 0,
       ...>  manually_entered: false
       ...> }
-      iex> ExCorreios.calculate(:pac, shipping_params)
+      iex> ExCorreios.calculate(:pac, package, shipping_params)
       {:ok,
        %{
          deadline: 5,
@@ -44,7 +46,7 @@ defmodule ExCorreios do
          value_without_additionals: 19.8
        }
       }
-      iex> ExCorreios.calculate([:pac, :sedex], shipping_params)
+      iex> ExCorreios.calculate([:pac, :sedex], package, shipping_params)
       {:ok,
         [
           %{
@@ -80,11 +82,13 @@ defmodule ExCorreios do
         ]
       }
   """
-  @spec calculate(atom() | list(), map(), String.t()) ::
+  @spec calculate(atom() | list(), map(), map(), String.t()) ::
           {:ok, map()} | {:ok, list(map)} | {:error, String.t()}
-  def calculate(services, params, base_url \\ nil) do
+  def calculate(services, package, params, opts \\ []) do
+    base_url = Keyword.get(opts, :base_url)
+
     services
-    |> Shipping.new(params)
+    |> Shipping.new(package, params)
     |> Url.build(base_url)
     |> Client.get()
   end

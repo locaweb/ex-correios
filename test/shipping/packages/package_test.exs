@@ -1,17 +1,31 @@
 defmodule ExCorreios.Shipping.Packages.PackageTest do
   use ExUnit.Case
 
+  import ExCorreios.Factory
+
   alias ExCorreios.Shipping.Packages.Package
 
-  describe "Package.new/1" do
-    test "returns a package struct" do
-      assert %Package{} = Package.new(%{format: 1})
+  describe "Package.new/2" do
+    test "returns a built package" do
+      package_item = build(:package_item)
+
+      assert %{diameter: 40, format: 1, height: 2.0, length: 16.0, weight: 0.3, width: 11.0} =
+               Package.build(:package_box, package_item)
     end
 
-    test "raises an error when building struct and format key was not given" do
-      error_message = "key :format not found in: %{}"
+    test "returns a built package when you pass a list of items" do
+      package_items = build_list(2, :package_item)
 
-      assert_raise KeyError, error_message, fn -> Package.new(%{}) end
+      expected_package = %{
+        diameter: 80,
+        format: 1,
+        height: 8.9,
+        length: 16.0,
+        weight: 0.6,
+        width: 11.0
+      }
+
+      assert Package.build(:package_box, package_items) == expected_package
     end
   end
 end

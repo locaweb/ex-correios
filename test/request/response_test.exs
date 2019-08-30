@@ -4,6 +4,7 @@ defmodule ExCorreios.Request.ResponseTest do
   import ExCorreios.Factory
 
   alias ExCorreios.Request.{Response, Url}
+  alias ExCorreios.Shipping.Packages.Package
   alias ExCorreios.Shipping.Service
 
   describe "Response.process/1" do
@@ -43,7 +44,8 @@ defmodule ExCorreios.Request.ResponseTest do
            value_without_additionals: 19.8
          }}
 
-      shipping = build(:shipping)
+      package = Package.build(:package_box, build(:package_item))
+      shipping = build(:shipping, package: package)
       url = Url.build(shipping, base_url)
 
       Bypass.expect(bypass, fn conn ->
@@ -109,8 +111,9 @@ defmodule ExCorreios.Request.ResponseTest do
            }
          ]}
 
+      package = Package.build(:package_box, build(:package_item))
       services = Service.get_services([:pac, :sedex])
-      shipping = build(:shipping, %{services: services})
+      shipping = build(:shipping, %{package: package, services: services})
       url = Url.build(shipping, base_url)
 
       Bypass.expect(bypass, fn conn ->

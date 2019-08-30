@@ -4,6 +4,7 @@ defmodule ExCorreios.Request.ClientTest do
   import ExCorreios.Factory
 
   alias ExCorreios.Request.{Client, Url}
+  alias ExCorreios.Shipping.Packages.Package
 
   describe "Client.get/1" do
     setup do
@@ -42,9 +43,11 @@ defmodule ExCorreios.Request.ClientTest do
            value_without_additionals: 19.8
          }}
 
+      package = Package.build(:package_box, build(:package_item))
+
       url =
         :shipping
-        |> build()
+        |> build(package: package)
         |> Url.build(base_url)
 
       Bypass.expect(bypass, fn conn ->

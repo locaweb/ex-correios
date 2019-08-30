@@ -2,7 +2,11 @@ defmodule ExCorreiosTest do
   use ExUnit.Case
   doctest ExCorreios
 
-  describe "ExCorreios.calculate/2" do
+  import ExCorreios.Factory
+
+  alias ExCorreios.Shipping.Packages.Package
+
+  describe "ExCorreios.calculate/4" do
     setup do
       bypass = Bypass.open()
       base_url = "http://localhost:#{bypass.port}"
@@ -42,13 +46,9 @@ defmodule ExCorreiosTest do
            value_without_additionals: 19.8
          }}
 
+      package = Package.build(:package_box, build(:package_item))
+
       params = %{
-        diameter: 40,
-        format: :package_box,
-        width: 11.0,
-        height: 2.0,
-        length: 16.0,
-        weight: 0.3,
         destination: "05724005",
         origin: "08720030",
         enterprise: "",
@@ -62,7 +62,7 @@ defmodule ExCorreiosTest do
         Plug.Conn.send_resp(conn, 200, response_body)
       end)
 
-      assert ExCorreios.calculate(:pac, params, base_url) == expected_result
+      assert ExCorreios.calculate(:pac, package, params, base_url: base_url) == expected_result
     end
   end
 end

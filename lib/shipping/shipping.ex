@@ -27,31 +27,20 @@ defmodule ExCorreios.Shipping.Shipping do
           services: List.t()
         }
 
-  alias ExCorreios.Shipping.Packages.Package
   alias ExCorreios.Shipping.Service
 
-  @spec new(atom() | list(), map()) :: %__MODULE__{}
-  def new(service_keys, params) do
-    package = build_package(params)
+  @spec new(atom() | list(), map(), map()) :: %__MODULE__{}
+  def new(service_keys, package, params) do
     services = get_services(service_keys)
 
     shipping_params =
       params
-      |> Map.drop(package_keys())
       |> Map.put(:services, services)
       |> Map.put(:package, package)
 
     struct!(__MODULE__, shipping_params)
   end
 
-  defp build_package(shipping_params) do
-    shipping_params
-    |> Map.take(package_keys())
-    |> Package.new()
-  end
-
   defp get_services(services) when is_list(services), do: Service.get_services(services)
   defp get_services(service), do: Service.get_service(service)
-
-  defp package_keys, do: Map.keys(Package.__struct__())
 end
