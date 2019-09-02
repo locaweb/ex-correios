@@ -9,7 +9,7 @@ Add ExCorreios to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:ex_correios, "~> 0.1.0"}
+    {:ex_correios, git: "https://code.locaweb.com.br/criador-sites/ex_correios"}
   ]
 end
 ```
@@ -57,7 +57,7 @@ iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, package_
 }
 ```
 
-2.1 - When the package dimensions is smaller than min dimensions accept, we'll use the default dimensions.
+2.1 - When the package dimensions is smaller than the min dimensions accepted, we'll use the min dimensions defined by the correios.
 
 ```elixir
 iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, package_item2)

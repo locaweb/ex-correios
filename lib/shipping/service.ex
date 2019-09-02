@@ -1,6 +1,6 @@
 defmodule ExCorreios.Shipping.Service do
   @moduledoc """
-  This module provides one or more services.
+  This module describes one or more shipping services.
   """
 
   @available_services [

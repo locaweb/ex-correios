@@ -56,5 +56,28 @@ defmodule ExCorreios.Request.ClientTest do
 
       assert Client.get(url) == expected_response
     end
+
+    test "returns a error request result", %{
+      base_url: base_url,
+      bypass: bypass
+    } do
+      error_message = "econnrefused"
+      package = Package.build(:package_box, build(:package_item))
+
+      params = %{
+        destination: "05724005",
+        origin: "08720030",
+        enterprise: "",
+        password: "",
+        receiving_alert: false,
+        declared_value: 0,
+        manually_entered: false
+      }
+
+      Bypass.down(bypass)
+
+      assert ExCorreios.calculate(:pac, package, params, base_url: base_url) ==
+               {:error, error_message}
+    end
   end
 end

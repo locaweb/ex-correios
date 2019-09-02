@@ -1,6 +1,5 @@
 defmodule ExCorreios.Shipping.Packages.PackageTest do
   use ExUnit.Case
-  doctest ExCorreios.Shipping.Packages.Package
 
   import ExCorreios.Factory
 
