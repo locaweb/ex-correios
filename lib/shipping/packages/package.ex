@@ -1,26 +1,73 @@
 defmodule ExCorreios.Shipping.Packages.Package do
-  @moduledoc false
+  @moduledoc """
+  This module provides a package struct
+  """
 
   @min_dimensions %{height: 2.0, length: 16.0, width: 11.0}
 
   alias ExCorreios.Shipping.Packages.{Format, PackageItem}
 
-  @spec build(atom(), list()) :: map() | list(map)
+  @doc """
+  Build a package with one or more items to calculate shipping
+
+  ## Examples
+    iex> package_item = ExCorreios.Shipping.Packages.PackageItem.new(%{
+    ...>  diameter: 40,
+    ...>  height: 2.0,
+    ...>  length: 16.0,
+    ...>  weight: 0.9,
+    ...>  width: 11.0
+    ...> })
+    iex> ExCorreios.Shipping.Packages.Package.build(:package_box, [package_item, package_item])
+    %{
+        __struct__: ExCorreios.Shipping.Packages.PackageItem,
+        diameter: 80,
+        format: 1,
+        height: 8.9,
+        length: 16.0,
+        weight: 1.8,
+        width: 11.0
+    }
+  """
+  @spec build(atom(), list(map)) :: map()
   def build(format, items) when is_list(items) do
     dimension = calculate_dimensions(items)
 
-    package = %{
-      weight: sum(:weight, items),
-      diameter: sum(:diameter, items),
-      height: dimension,
-      length: dimension,
-      width: dimension
-    }
+    package =
+      PackageItem.new(%{
+        weight: sum(:weight, items),
+        diameter: sum(:diameter, items),
+        height: dimension,
+        length: dimension,
+        width: dimension
+      })
 
     build_package(format, package)
   end
 
-  @spec build(atom(), map()) :: map() | list(map)
+  @doc """
+  Build a package with an item to calculate shipping
+
+  ## Examples
+    iex> package_item = ExCorreios.Shipping.Packages.PackageItem.new(%{
+    ...>  diameter: 40,
+    ...>  height: 2.0,
+    ...>  length: 16.0,
+    ...>  weight: 0.9,
+    ...>  width: 11.0
+    ...> })
+    iex> ExCorreios.Shipping.Packages.Package.build(:package_box, package_item)
+    %{
+        __struct__: ExCorreios.Shipping.Packages.PackageItem,
+        diameter: 40,
+        format: 1,
+        height: 2.0,
+        length: 16.0,
+        weight: 0.9,
+        width: 11.0
+    }
+  """
+  @spec build(atom(), map()) :: map()
   def build(format, item), do: build_package(format, item)
 
   defp build_package(format, package) do

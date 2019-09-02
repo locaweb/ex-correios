@@ -1,11 +1,12 @@
 defmodule ExCorreios.Shipping.Packages.PackageTest do
   use ExUnit.Case
+  doctest ExCorreios.Shipping.Packages.Package
 
   import ExCorreios.Factory
 
   alias ExCorreios.Shipping.Packages.Package
 
-  describe "Package.new/2" do
+  describe "Package.build/2" do
     test "returns a built package" do
       package_item = build(:package_item)
 
@@ -16,16 +17,8 @@ defmodule ExCorreios.Shipping.Packages.PackageTest do
     test "returns a built package when you pass a list of items" do
       package_items = build_list(2, :package_item)
 
-      expected_package = %{
-        diameter: 80,
-        format: 1,
-        height: 8.9,
-        length: 16.0,
-        weight: 0.6,
-        width: 11.0
-      }
-
-      assert Package.build(:package_box, package_items) == expected_package
+      assert %{diameter: 80, format: 1, height: 8.9, length: 16.0, weight: 0.6, width: 11.0} =
+               Package.build(:package_box, package_items)
     end
   end
 end

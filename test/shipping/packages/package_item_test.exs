@@ -1,10 +1,12 @@
 defmodule ExCorreios.Shipping.Packages.PackageItemTest do
   use ExUnit.Case
 
+  doctest ExCorreios.Shipping.Packages.PackageItem
+
   alias ExCorreios.Shipping.Packages.PackageItem
 
   describe "PackageItem.new/1" do
-    test "returns a package struct" do
+    test "returns a package item struct" do
       assert %PackageItem{} = PackageItem.new(%{})
     end
   end
