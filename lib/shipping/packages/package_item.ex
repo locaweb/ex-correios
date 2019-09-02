@@ -34,7 +34,7 @@ defmodule ExCorreios.Shipping.Packages.PackageItem do
     }
   """
   @spec new(map()) :: %__MODULE__{}
-  def new(params), do: struct(__MODULE__, params)
+  def new(params \\ %{}), do: struct(__MODULE__, params)
 
   @spec volume(map()) :: float()
   def volume(%{height: height, length: length, width: width} = _item), do: height * length * width
