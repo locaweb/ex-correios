@@ -16,7 +16,7 @@ end
 
 ## Getting started
 
-1 - Build one ore more package items.
+1 - Build one or more package items.
 
 ```elixir
 iex> package_item = ExCorreios.Shipping.Packages.PackageItem.new(%{
@@ -220,12 +220,14 @@ $ mix test --trace
 ## Running tests coverage check
 
 ```
-mix test --cover
+$ mix test --cover
 ```
 
 ## Running code formatter
 
-mix format
+```
+$ mix format
+```
 
 
 ## Credo
@@ -233,5 +235,5 @@ mix format
 Credo is a static code analysis tool for the Elixir language, to run credo:
 
 ```
-mix credo --strict
+$ mix credo --strict
 ```

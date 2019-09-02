@@ -3,6 +3,7 @@ defmodule ExCorreios.Shipping.Packages.Package do
   This module provides a package struct
   """
 
+  @iata_coefficient 6000
   @min_dimensions %{height: 2.0, length: 16.0, width: 11.0}
 
   alias ExCorreios.Shipping.Packages.{Format, PackageItem}
@@ -79,7 +80,7 @@ defmodule ExCorreios.Shipping.Packages.Package do
   defp calculate_dimensions(items) do
     items
     |> Enum.reduce(0, fn item, acc -> PackageItem.volume(item) + acc end)
-    |> :math.pow(1.0 / 3)
+    |> Kernel./(@iata_coefficient)
     |> Float.round(2)
   end
 
