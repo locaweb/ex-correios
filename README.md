@@ -35,7 +35,7 @@ iex> package_item = ExCorreios.Shipping.Packages.PackageItem.new(%{
 ...>  length: 16.0,
 ...>  weight: 0.9
 ...> })
-%{
+%ExCorreios.Shipping.Packages.PackageItem{
   diameter: 40,
   width: 11.0,
   height: 2.0,
@@ -43,7 +43,7 @@ iex> package_item = ExCorreios.Shipping.Packages.PackageItem.new(%{
   weight: 0.9
 }
 iex> package_item2 = ExCorreios.Shipping.Packages.PackageItem.new()
-%{
+%ExCorreios.Shipping.Packages.PackageItem{
   diameter: 0.0,
   height: 0.0,
   length: 0.0,
@@ -56,8 +56,7 @@ iex> package_item2 = ExCorreios.Shipping.Packages.PackageItem.new()
 
 ```elixir
 iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, package_item)
-%{
-  __struct__: ExCorreios.Shipping.Packages.PackageItem,
+%ExCorreios.Shipping.Packages.Package{
   diameter: 40,
   width: 11.0,
   height: 2.0,
@@ -70,8 +69,7 @@ iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, package_
 
 ```elixir
 iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, package_item2)
-%{
-  __struct__: ExCorreios.Shipping.Packages.PackageItem,
+%ExCorreios.Shipping.Packages.Package{
   diameter: 0.0,
   width: 11.0,
   height: 2.0,
@@ -84,8 +82,7 @@ iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, package_
 
 ```elixir
 iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, [package_item, package_item2])
-%{
-  __struct__: ExCorreios.Shipping.Packages.PackageItem,
+%ExCorreios.Shipping.Packages.Package{
   diameter: 40.0,
   format: 1,
   height: 7.06,
@@ -107,32 +104,25 @@ iex> shipping_params = %{
 ...>  declared_value: 0,
 ...>  manually_entered: false
 ...> }
-%{
-  destination: "05724005",
-  origin: "08720030",
-  enterprise: "",
-  password: "",
-  receiving_alert: false,
-  declared_value: 0,
-  manually_entered: false
-}
-iex> ExCorreios.calculate(:pac, package, shipping_params)
+iex> ExCorreios.calculate([:pac], package, shipping_params)
 {:ok,
- %{
-   deadline: 5,
-   declared_value: 0.0,
-   error_code: "0",
-   error_message: "",
-   home_delivery: "S",
-   manually_entered_value: 0.0,
-   notes: "",
-   receiving_alert_value: 0.0,
-   response_status: "0",
-   saturday_delivery: "N",
-   service_code: "04510",
-   value: 19.8,
-   value_without_additionals: 19.8
- }
+  [
+    %{
+      deadline: 5,
+      declared_value: 0.0,
+      error_code: "0",
+      error_message: "",
+      home_delivery: "S",
+      manually_entered_value: 0.0,
+      notes: "",
+      receiving_alert_value: 0.0,
+      response_status: "0",
+      saturday_delivery: "N",
+      service_code: "04510",
+      value: 19.8,
+      value_without_additionals: 19.8
+    }
+  ]
 }
 iex> ExCorreios.calculate([:pac, :sedex], package, shipping_params)
 {:ok,

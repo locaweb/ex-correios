@@ -10,16 +10,6 @@ defmodule ExCorreios.Shipping.ShippingTest do
       package = Package.build(:package_box, build(:package_item))
 
       assert %Shipping{} =
-               Shipping.new(:pac, package, %{
-                 destination: "06666666",
-                 origin: "03333333"
-               })
-    end
-
-    test "returns a shipping struct with a service list" do
-      package = Package.build(:package_box, build(:package_item))
-
-      assert %Shipping{} =
                Shipping.new([:pac, :sedex], package, %{
                  destination: "06666666",
                  origin: "03333333"
@@ -33,7 +23,7 @@ defmodule ExCorreios.Shipping.ShippingTest do
         "the following keys must also be given when building struct ExCorreios.Shipping.Shipping: [:destination, :origin]"
 
       assert_raise ArgumentError, error_message, fn ->
-        Shipping.new(:pac, package, %{})
+        Shipping.new([:pac], package, %{})
       end
     end
   end

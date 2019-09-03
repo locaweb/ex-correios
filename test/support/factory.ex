@@ -20,7 +20,7 @@ defmodule ExCorreios.Factory do
       package: package_item_factory(),
       password: "",
       receiving_alert: false,
-      services: Service.get_service(:pac)
+      services: Service.get_services([:pac])
     }
   end
 end

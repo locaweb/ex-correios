@@ -27,11 +27,12 @@ defmodule ExCorreios.Shipping.Shipping do
           services: List.t()
         }
 
+  alias ExCorreios.Shipping.Packages.Package
   alias ExCorreios.Shipping.Service
 
-  @spec new(atom() | list(), map(), map()) :: %__MODULE__{}
+  @spec new(list(atom), %Package{}, map()) :: %__MODULE__{}
   def new(service_keys, package, params) do
-    services = get_services(service_keys)
+    services = Service.get_services(service_keys)
 
     shipping_params =
       params
@@ -40,7 +41,4 @@ defmodule ExCorreios.Shipping.Shipping do
 
     struct!(__MODULE__, shipping_params)
   end
-
-  defp get_services(services) when is_list(services), do: Service.get_services(services)
-  defp get_services(service), do: Service.get_service(service)
 end

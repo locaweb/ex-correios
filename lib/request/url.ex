@@ -33,13 +33,11 @@ defmodule ExCorreios.Request.Url do
   defp base_url(nil), do: Application.get_env(:ex_correios, :base_url)
   defp base_url(url), do: url
 
-  defp format_services(services) when is_list(services) do
+  defp format_services(services) do
     services
     |> Enum.map(fn {_k, v} -> v.code end)
     |> Enum.join(",")
   end
-
-  defp format_services(service), do: service.code
 
   defp format_boolean(true), do: "S"
   defp format_boolean(false), do: "N"

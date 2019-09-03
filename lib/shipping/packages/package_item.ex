@@ -24,8 +24,7 @@ defmodule ExCorreios.Shipping.Packages.PackageItem do
     ...>  weight: 0.9,
     ...>  width: 11.0
     ...> })
-    %{
-        __struct__: ExCorreios.Shipping.Packages.PackageItem,
+    %ExCorreios.Shipping.Packages.PackageItem{
         diameter: 40,
         height: 2.0,
         length: 16.0,

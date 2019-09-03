@@ -27,21 +27,23 @@ defmodule ExCorreios.Request.ClientTest do
 
       expected_response =
         {:ok,
-         %{
-           deadline: 5,
-           declared_value: 0.0,
-           error_code: "0",
-           error_message: "",
-           home_delivery: "S",
-           manually_entered_value: 0.0,
-           notes: "",
-           receiving_alert_value: 0.0,
-           response_status: "0",
-           saturday_delivery: "N",
-           service_code: "04510",
-           value: 19.8,
-           value_without_additionals: 19.8
-         }}
+         [
+           %{
+             deadline: 5,
+             declared_value: 0.0,
+             error_code: "0",
+             error_message: "",
+             home_delivery: "S",
+             manually_entered_value: 0.0,
+             notes: "",
+             receiving_alert_value: 0.0,
+             response_status: "0",
+             saturday_delivery: "N",
+             service_code: "04510",
+             value: 19.8,
+             value_without_additionals: 19.8
+           }
+         ]}
 
       package = Package.build(:package_box, build(:package_item))
 
@@ -76,7 +78,7 @@ defmodule ExCorreios.Request.ClientTest do
 
       Bypass.down(bypass)
 
-      assert ExCorreios.calculate(:pac, package, params, base_url: base_url) ==
+      assert ExCorreios.calculate([:pac], package, params, base_url: base_url) ==
                {:error, error_message}
     end
   end

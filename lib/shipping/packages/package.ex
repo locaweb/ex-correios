@@ -3,6 +3,8 @@ defmodule ExCorreios.Shipping.Packages.Package do
   This module provides a package struct
   """
 
+  defstruct diameter: 0.0, format: nil, height: 0.0, length: 0.0, weight: 0.0, width: 0.0
+
   @iata_coefficient 6000
   @min_dimensions %{height: 2.0, length: 16.0, width: 11.0}
 
@@ -20,8 +22,7 @@ defmodule ExCorreios.Shipping.Packages.Package do
     ...>  width: 11.0
     ...> })
     iex> ExCorreios.Shipping.Packages.Package.build(:package_box, [package_item, package_item])
-    %{
-        __struct__: ExCorreios.Shipping.Packages.PackageItem,
+    %ExCorreios.Shipping.Packages.Package{
         diameter: 80,
         format: 1,
         height: 8.9,
@@ -34,14 +35,13 @@ defmodule ExCorreios.Shipping.Packages.Package do
   def build(format, items) when is_list(items) do
     dimension = calculate_dimensions(items)
 
-    package =
-      PackageItem.new(%{
-        weight: sum(:weight, items),
-        diameter: sum(:diameter, items),
-        height: dimension,
-        length: dimension,
-        width: dimension
-      })
+    package = %{
+      weight: sum(:weight, items),
+      diameter: sum(:diameter, items),
+      height: dimension,
+      length: dimension,
+      width: dimension
+    }
 
     build_package(format, package)
   end
@@ -58,8 +58,7 @@ defmodule ExCorreios.Shipping.Packages.Package do
     ...>  width: 11.0
     ...> })
     iex> ExCorreios.Shipping.Packages.Package.build(:package_box, package_item)
-    %{
-        __struct__: ExCorreios.Shipping.Packages.PackageItem,
+    %ExCorreios.Shipping.Packages.Package{
         diameter: 40,
         format: 1,
         height: 2.0,
@@ -69,12 +68,19 @@ defmodule ExCorreios.Shipping.Packages.Package do
     }
   """
   @spec build(atom(), map()) :: map()
-  def build(format, item), do: build_package(format, item)
+  def build(format, item) do
+    map = Map.delete(item, :__struct__)
+
+    build_package(format, map)
+  end
 
   defp build_package(format, package) do
-    package
-    |> Map.merge(dimensions(package))
-    |> Map.put(:format, Format.get(format))
+    package =
+      package
+      |> Map.merge(dimensions(package))
+      |> Map.put(:format, Format.get(format))
+
+    struct(__MODULE__, package)
   end
 
   defp calculate_dimensions(items) do

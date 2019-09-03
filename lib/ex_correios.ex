@@ -4,6 +4,7 @@ defmodule ExCorreios do
   """
 
   alias ExCorreios.Request.{Client, Url}
+  alias ExCorreios.Shipping.Packages.Package
   alias ExCorreios.Shipping.Shipping
 
   @doc """
@@ -28,24 +29,6 @@ defmodule ExCorreios do
       ...>  declared_value: 0,
       ...>  manually_entered: false
       ...> }
-      iex> ExCorreios.calculate(:pac, package, shipping_params)
-      {:ok,
-       %{
-         deadline: 5,
-         declared_value: 0.0,
-         error_code: "0",
-         error_message: "",
-         home_delivery: "S",
-         manually_entered_value: 0.0,
-         notes: "",
-         receiving_alert_value: 0.0,
-         response_status: "0",
-         saturday_delivery: "N",
-         service_code: "04510",
-         value: 19.8,
-         value_without_additionals: 19.8
-       }
-      }
       iex> ExCorreios.calculate([:pac, :sedex], package, shipping_params)
       {:ok,
         [
@@ -82,8 +65,8 @@ defmodule ExCorreios do
         ]
       }
   """
-  @spec calculate(atom() | list(), map(), map(), String.t()) ::
-          {:ok, map()} | {:ok, list(map)} | {:error, String.t()}
+  @spec calculate(list(atom), %Package{}, map(), String.t()) ::
+          {:ok, list(map)} | {:error, String.t()}
   def calculate(services, package, params, opts \\ []) do
     base_url = Keyword.get(opts, :base_url)
 
