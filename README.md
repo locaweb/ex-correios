@@ -14,6 +14,15 @@ def deps do
 end
 ```
 
+## Configuration
+
+Add the following config to your config.exs file:
+
+```elixir
+config :ex_correios,
+  base_url: "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx"
+```
+
 ## Getting started
 
 1 - Build one or more package items.

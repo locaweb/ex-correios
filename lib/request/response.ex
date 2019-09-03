@@ -7,11 +7,11 @@ defmodule ExCorreios.Request.Response do
 
   @root_path '//Servicos/cServico'
 
-  @spec process(%HTTPotion.Response{}) :: {:ok, map()} | {:ok, list(struct())}
-  def process(%HTTPotion.Response{status_code: 200, body: body}), do: {:ok, parser(body)}
+  @spec process({:ok, %HTTPoison.Response{}}) :: {:ok, map()} | {:ok, list(struct())}
+  def process({:ok, %HTTPoison.Response{status_code: 200, body: body}}), do: {:ok, parser(body)}
 
-  @spec process(%HTTPotion.ErrorResponse{}) :: {:error, String.t()}
-  def process(%HTTPotion.ErrorResponse{message: reason}), do: {:error, reason}
+  @spec process({:error, %HTTPoison.Error{}}) :: {:error, String.t()}
+  def process({:error, %HTTPoison.Error{reason: reason}}), do: {:error, reason}
 
   defp parser(body) do
     case xpath(body, %SweetXpath{path: @root_path, is_list: true}, shipping_path()) do

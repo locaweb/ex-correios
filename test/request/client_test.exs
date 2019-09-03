@@ -61,7 +61,7 @@ defmodule ExCorreios.Request.ClientTest do
       base_url: base_url,
       bypass: bypass
     } do
-      error_message = "econnrefused"
+      error_message = :econnrefused
       package = Package.build(:package_box, build(:package_item))
 
       params = %{

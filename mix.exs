@@ -23,7 +23,7 @@ defmodule ExCorreios.MixProject do
       {:bypass, "~> 1.0", only: :test},
       {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false},
       {:ex_machina, "~> 2.3", only: :test},
-      {:httpotion, "~> 3.1.0"},
+      {:httpoison, "~> 1.5"},
       {:sweet_xml, "~> 0.6.5"}
     ]
   end

@@ -52,7 +52,7 @@ defmodule ExCorreios.Request.ResponseTest do
         Plug.Conn.send_resp(conn, 200, response_body)
       end)
 
-      response = HTTPotion.get(url)
+      response = HTTPoison.get(url)
 
       assert Response.process(response) == expected_response
     end
@@ -120,14 +120,14 @@ defmodule ExCorreios.Request.ResponseTest do
         Plug.Conn.send_resp(conn, 200, response_body)
       end)
 
-      response = HTTPotion.get(url)
+      response = HTTPoison.get(url)
 
       assert Response.process(response) == expected_response
     end
 
     test "returns a processed failure response" do
       expected_response = {:error, "req_timedout"}
-      response = %HTTPotion.ErrorResponse{message: "req_timedout"}
+      response = {:error, %HTTPoison.Error{reason: "req_timedout"}}
 
       assert Response.process(response) == expected_response
     end

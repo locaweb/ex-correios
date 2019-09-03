@@ -10,7 +10,7 @@ defmodule ExCorreios.Request.Client do
   def get(url) do
     url
     |> log_request()
-    |> HTTPotion.get()
+    |> HTTPoison.get()
     |> Response.process()
   end
 
