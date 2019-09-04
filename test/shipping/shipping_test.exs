@@ -3,11 +3,11 @@ defmodule ExCorreios.Shipping.ShippingTest do
 
   import ExCorreios.Factory
 
-  alias ExCorreios.Shipping.{Packages.Package, Shipping}
+  alias ExCorreios.Shipping.Shipping
 
   describe "Shipping.new/3" do
     test "returns a shipping struct" do
-      package = Package.build(:package_box, build(:package_item))
+      package = build(:package)
 
       assert %Shipping{} =
                Shipping.new([:pac, :sedex], package, %{
@@ -17,7 +17,7 @@ defmodule ExCorreios.Shipping.ShippingTest do
     end
 
     test "raises an error when building struct and format key was not given" do
-      package = Package.build(:package_box, build(:package_item))
+      package = build(:package)
 
       error_message =
         "the following keys must also be given when building struct ExCorreios.Shipping.Shipping: [:destination, :origin]"

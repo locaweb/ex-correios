@@ -12,14 +12,8 @@ defmodule ExCorreios do
 
   ## Examples
 
-      iex> package_item = ExCorreios.Shipping.Packages.PackageItem.new(%{
-      ...>  diameter: 40,
-      ...>  width: 11.0,
-      ...>  height: 2.0,
-      ...>  length: 16.0,
-      ...>  weight: 0.9,
-      ...> })
-      iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, package_item)
+      iex> dimensions = %{diameter: 40, width: 11.0, height: 2.0, length: 16.0, weight: 0.9}
+      iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, dimensions)
       iex> shipping_params = %{
       ...>  destination: "05724005",
       ...>  origin: "08720030",

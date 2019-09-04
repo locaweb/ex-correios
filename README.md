@@ -28,13 +28,7 @@ config :ex_correios,
 1 - Build one or more package items.
 
 ```elixir
-iex> package_item = ExCorreios.Shipping.Packages.PackageItem.new(%{
-...>  diameter: 40,
-...>  width: 11.0,
-...>  height: 2.0,
-...>  length: 16.0,
-...>  weight: 0.9
-...> })
+iex> dimensions = %{diameter: 40, width: 11.0, height: 2.0, length: 16.0, weight: 0.9}
 %ExCorreios.Shipping.Packages.PackageItem{
   diameter: 40,
   width: 11.0,
@@ -42,7 +36,7 @@ iex> package_item = ExCorreios.Shipping.Packages.PackageItem.new(%{
   length: 16.0,
   weight: 0.9
 }
-iex> package_item2 = ExCorreios.Shipping.Packages.PackageItem.new()
+iex> dimensions2 = %{}
 %ExCorreios.Shipping.Packages.PackageItem{
   diameter: 0.0,
   height: 0.0,
@@ -55,7 +49,7 @@ iex> package_item2 = ExCorreios.Shipping.Packages.PackageItem.new()
 2 - Build a package with an item to calculate shipping
 
 ```elixir
-iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, package_item)
+iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, dimensions)
 %ExCorreios.Shipping.Packages.Package{
   diameter: 40,
   width: 11.0,
@@ -68,7 +62,7 @@ iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, package_
 2.1 - When the package dimensions is smaller than the min dimensions accepted, we'll use the min dimensions defined by the correios.
 
 ```elixir
-iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, package_item2)
+iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, dimensions2)
 %ExCorreios.Shipping.Packages.Package{
   diameter: 0.0,
   width: 11.0,
@@ -81,7 +75,7 @@ iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, package_
 2.2 - Build a package with one or more items to calculate shipping
 
 ```elixir
-iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, [package_item, package_item2])
+iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, [dimensions, dimensions2])
 %ExCorreios.Shipping.Packages.Package{
   diameter: 40.0,
   format: 1,
@@ -204,7 +198,7 @@ iex> ExCorreios.calculate([:pac, :sedex_hoje], package, shipping_params)
 
 ```elixir
 iex> ExCorreios.calculate([:pac, :sedex_hoje], package, shipping_params)
-{:error, "req_timedout"}
+{:error, :timeout}
 ```
 
 ## Running tests
@@ -227,7 +221,6 @@ $ mix test --cover
 ```
 $ mix format
 ```
-
 
 ## Credo
 

@@ -3,25 +3,29 @@ defmodule ExCorreios.Shipping.Packages.Package do
   This module provides a package struct
   """
 
+  @enforce_keys [:format, :height, :length, :weight, :width]
+
   defstruct diameter: 0.0, format: nil, height: 0.0, length: 0.0, weight: 0.0, width: 0.0
 
-  @iata_coefficient 6000
-  @min_dimensions %{height: 2.0, length: 16.0, width: 11.0}
+  @type t :: %__MODULE__{
+          diameter: float(),
+          format: integer(),
+          height: float(),
+          length: float(),
+          weight: float(),
+          width: float()
+        }
 
-  alias ExCorreios.Shipping.Packages.{Format, PackageItem}
+  @iata_coefficient 6000
+  @formats %{package_box: 1, roll_prism: 2, envelope: 3}
+  @min_dimensions %{height: 2.0, length: 16.0, width: 11.0}
 
   @doc """
   Build a package with one or more items to calculate shipping
 
   ## Examples
-    iex> package_item = ExCorreios.Shipping.Packages.PackageItem.new(%{
-    ...>  diameter: 40,
-    ...>  height: 2.0,
-    ...>  length: 16.0,
-    ...>  weight: 0.9,
-    ...>  width: 11.0
-    ...> })
-    iex> ExCorreios.Shipping.Packages.Package.build(:package_box, [package_item, package_item])
+    iex> dimensions = %{diameter: 40, height: 2.0, length: 16.0, weight: 0.9, width: 11.0}
+    iex> ExCorreios.Shipping.Packages.Package.build(:package_box, [dimensions, dimensions])
     %ExCorreios.Shipping.Packages.Package{
         diameter: 80,
         format: 1,
@@ -50,14 +54,8 @@ defmodule ExCorreios.Shipping.Packages.Package do
   Build a package with an item to calculate shipping
 
   ## Examples
-    iex> package_item = ExCorreios.Shipping.Packages.PackageItem.new(%{
-    ...>  diameter: 40,
-    ...>  height: 2.0,
-    ...>  length: 16.0,
-    ...>  weight: 0.9,
-    ...>  width: 11.0
-    ...> })
-    iex> ExCorreios.Shipping.Packages.Package.build(:package_box, package_item)
+    iex> dimensions = %{diameter: 40, height: 2.0, length: 16.0, weight: 0.9, width: 11.0}
+    iex> ExCorreios.Shipping.Packages.Package.build(:package_box, dimensions)
     %ExCorreios.Shipping.Packages.Package{
         diameter: 40,
         format: 1,
@@ -68,27 +66,28 @@ defmodule ExCorreios.Shipping.Packages.Package do
     }
   """
   @spec build(atom(), map()) :: map()
-  def build(format, item) do
-    map = Map.delete(item, :__struct__)
-
-    build_package(format, map)
-  end
+  def build(format, item), do: build_package(format, item)
 
   defp build_package(format, package) do
     package =
       package
       |> Map.merge(dimensions(package))
-      |> Map.put(:format, Format.get(format))
+      |> Map.put(:format, get_format(format))
 
     struct(__MODULE__, package)
   end
 
+  def get_format(format), do: @formats[format]
+
   defp calculate_dimensions(items) do
     items
-    |> Enum.reduce(0, fn item, acc -> PackageItem.volume(item) + acc end)
+    |> Enum.reduce(0, fn item, acc -> volume(item) + acc end)
     |> Kernel./(@iata_coefficient)
     |> Float.round(2)
   end
+
+  defp volume(%{height: height, length: length, width: width} = _item),
+    do: height * length * width
 
   defp sum(key, items), do: Enum.reduce(items, 0, fn item, acc -> Map.get(item, key) + acc end)
 

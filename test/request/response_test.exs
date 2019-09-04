@@ -4,7 +4,6 @@ defmodule ExCorreios.Request.ResponseTest do
   import ExCorreios.Factory
 
   alias ExCorreios.Request.{Response, Url}
-  alias ExCorreios.Shipping.Packages.Package
   alias ExCorreios.Shipping.Service
 
   describe "Response.process/1" do
@@ -16,16 +15,6 @@ defmodule ExCorreios.Request.ResponseTest do
     end
 
     test "returns a processed response", %{base_url: base_url, bypass: bypass} do
-      response_body = """
-      <?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n<Servicos><cServico>
-      <Codigo>04510</Codigo><Valor>19,80</Valor><PrazoEntrega>5</PrazoEntrega>
-      <ValorSemAdicionais>19,80</ValorSemAdicionais><ValorMaoPropria>0,00</ValorMaoPropria>
-      <ValorAvisoRecebimento>0,00</ValorAvisoRecebimento>
-      <ValorValorDeclarado>0,00</ValorValorDeclarado><EntregaDomiciliar>S</EntregaDomiciliar>
-      <EntregaSabado>N</EntregaSabado><obsFim></obsFim><Erro>0</Erro>
-      <MsgErro></MsgErro></cServico></Servicos>
-      """
-
       expected_response =
         {:ok,
          [
@@ -46,11 +35,21 @@ defmodule ExCorreios.Request.ResponseTest do
            }
          ]}
 
-      package = Package.build(:package_box, build(:package_item))
+      package = build(:package)
       shipping = build(:shipping, package: package)
       url = Url.build(shipping, base_url)
 
       Bypass.expect(bypass, fn conn ->
+        response_body = """
+        <?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n<Servicos><cServico>
+        <Codigo>04510</Codigo><Valor>19,80</Valor><PrazoEntrega>5</PrazoEntrega>
+        <ValorSemAdicionais>19,80</ValorSemAdicionais><ValorMaoPropria>0,00</ValorMaoPropria>
+        <ValorAvisoRecebimento>0,00</ValorAvisoRecebimento>
+        <ValorValorDeclarado>0,00</ValorValorDeclarado><EntregaDomiciliar>S</EntregaDomiciliar>
+        <EntregaSabado>N</EntregaSabado><obsFim></obsFim><Erro>0</Erro>
+        <MsgErro></MsgErro></cServico></Servicos>
+        """
+
         Plug.Conn.send_resp(conn, 200, response_body)
       end)
 
@@ -63,21 +62,6 @@ defmodule ExCorreios.Request.ResponseTest do
       base_url: base_url,
       bypass: bypass
     } do
-      response_body = """
-      <?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n<Servicos><cServico>
-      <Codigo>04510</Codigo><Valor>19,80</Valor><PrazoEntrega>5</PrazoEntrega>
-      <ValorSemAdicionais>19,80</ValorSemAdicionais><ValorMaoPropria>0,00</ValorMaoPropria>
-      <ValorAvisoRecebimento>0,00</ValorAvisoRecebimento>
-      <ValorValorDeclarado>0,00</ValorValorDeclarado><EntregaDomiciliar>S</EntregaDomiciliar>
-      <EntregaSabado>N</EntregaSabado><obsFim></obsFim><Erro>0</Erro><MsgErro></MsgErro></cServico>
-      <cServico><Codigo>04014</Codigo><Valor>19,80</Valor><PrazoEntrega>2</PrazoEntrega>
-      <ValorSemAdicionais>19,80</ValorSemAdicionais><ValorMaoPropria>0,00</ValorMaoPropria>
-      <ValorAvisoRecebimento>0,00</ValorAvisoRecebimento>
-      <ValorValorDeclarado>0,00</ValorValorDeclarado><EntregaDomiciliar>S</EntregaDomiciliar>
-      <EntregaSabado>S</EntregaSabado><obsFim></obsFim><Erro>0</Erro><MsgErro></MsgErro></cServico>
-      </Servicos>
-      """
-
       expected_response =
         {:ok,
          [
@@ -113,12 +97,27 @@ defmodule ExCorreios.Request.ResponseTest do
            }
          ]}
 
-      package = Package.build(:package_box, build(:package_item))
+      package = build(:package)
       services = Service.get_services([:pac, :sedex])
       shipping = build(:shipping, %{package: package, services: services})
       url = Url.build(shipping, base_url)
 
       Bypass.expect(bypass, fn conn ->
+        response_body = """
+        <?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n<Servicos><cServico>
+        <Codigo>04510</Codigo><Valor>19,80</Valor><PrazoEntrega>5</PrazoEntrega>
+        <ValorSemAdicionais>19,80</ValorSemAdicionais><ValorMaoPropria>0,00</ValorMaoPropria>
+        <ValorAvisoRecebimento>0,00</ValorAvisoRecebimento>
+        <ValorValorDeclarado>0,00</ValorValorDeclarado><EntregaDomiciliar>S</EntregaDomiciliar>
+        <EntregaSabado>N</EntregaSabado><obsFim></obsFim><Erro>0</Erro><MsgErro></MsgErro></cServico>
+        <cServico><Codigo>04014</Codigo><Valor>19,80</Valor><PrazoEntrega>2</PrazoEntrega>
+        <ValorSemAdicionais>19,80</ValorSemAdicionais><ValorMaoPropria>0,00</ValorMaoPropria>
+        <ValorAvisoRecebimento>0,00</ValorAvisoRecebimento>
+        <ValorValorDeclarado>0,00</ValorValorDeclarado><EntregaDomiciliar>S</EntregaDomiciliar>
+        <EntregaSabado>S</EntregaSabado><obsFim></obsFim><Erro>0</Erro><MsgErro></MsgErro></cServico>
+        </Servicos>
+        """
+
         Plug.Conn.send_resp(conn, 200, response_body)
       end)
 

@@ -13,11 +13,11 @@ defmodule ExCorreios.Shipping.ServiceTest do
       assert Service.get_services([:pac, :sedex]) == expected_services
     end
 
-    test "returns a empty when the services don't exist" do
+    test "returns an empty when the services don't exist" do
       assert Service.get_services([:two_pac, :sedequis]) == []
     end
 
-    test "returns only avaiable services" do
+    test "returns only available services" do
       pac_service = %{code: "04510", name: "PAC", description: "PAC sem contrato"}
 
       assert Service.get_services([:pac, :sedexerxes]) == [pac: pac_service]

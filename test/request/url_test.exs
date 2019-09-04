@@ -4,7 +4,6 @@ defmodule ExCorreios.Request.UrlTest do
   import ExCorreios.Factory
 
   alias ExCorreios.Request.Url
-  alias ExCorreios.Shipping.Packages.Package
   alias ExCorreios.Shipping.Service
 
   describe "Url.build/1" do
@@ -16,7 +15,7 @@ defmodule ExCorreios.Request.UrlTest do
           "nVlAltura=2.0&nVlLargura=11.0&nVlDiametro=40&nCdMaoPropria=N&nCdMaoPropria=false&" <>
           "nVlValorDeclarado=0&sCdAvisoRecebimento=N&sCdAvisoRecebimento=false&StrRetorno=xml"
 
-      package = Package.build(:package_box, build(:package_item))
+      package = build(:package)
       services = Service.get_services([:pac, :sedex])
       shipping = build(:shipping, %{package: package, services: services})
 
