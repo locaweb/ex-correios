@@ -3,7 +3,7 @@ defmodule ExCorreios.Shipping.Service do
   This module describes one or more shipping services.
   """
 
-  @available_services [
+  @available_services %{
     pac: %{code: "04510", name: "PAC", description: "PAC sem contrato"},
     pac_com_contrato: %{code: "41068", name: "PAC", description: "PAC com contrato"},
     pac_com_contrato_2: %{code: "04669", name: "PAC", description: "PAC com contrato"},
@@ -53,9 +53,8 @@ defmodule ExCorreios.Shipping.Service do
       name: "e-SEDEX",
       description: "(Grupo 3) e-SEDEX, com contrato"
     }
-  ]
+  }
 
   @spec get_services(list(atom)) :: list(tuple)
-  def get_services(services),
-    do: Enum.filter(@available_services, fn {k, _v} -> k in services end)
+  def get_services(services), do: Map.take(@available_services, services)
 end

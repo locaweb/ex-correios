@@ -25,18 +25,20 @@ defmodule ExCorreios.Shipping.Packages.Package do
 
   ## Examples
     iex> dimensions = %{diameter: 40, height: 2.0, length: 16.0, weight: 0.9, width: 11.0}
-    iex> ExCorreios.Shipping.Packages.Package.build(:package_box, [dimensions, dimensions])
+    iex> ExCorreios.Shipping.Packages.Package.build(:package_box, [dimensions])
     %ExCorreios.Shipping.Packages.Package{
-        diameter: 80,
-        format: 1,
-        height: 8.9,
-        length: 16.0,
-        weight: 1.8,
-        width: 11.0
+      diameter: 40,
+      format: 1,
+      height: 2.0,
+      length: 16.0,
+      weight: 0.9,
+      width: 11.0
     }
   """
   @spec build(atom(), list(map)) :: map()
-  def build(format, items) when is_list(items) do
+  def build(format, [item]), do: build_package(format, item)
+
+  def build(format, items) do
     dimension = calculate_dimensions(items)
 
     package = %{
@@ -49,24 +51,6 @@ defmodule ExCorreios.Shipping.Packages.Package do
 
     build_package(format, package)
   end
-
-  @doc """
-  Build a package with an item to calculate shipping
-
-  ## Examples
-    iex> dimensions = %{diameter: 40, height: 2.0, length: 16.0, weight: 0.9, width: 11.0}
-    iex> ExCorreios.Shipping.Packages.Package.build(:package_box, dimensions)
-    %ExCorreios.Shipping.Packages.Package{
-        diameter: 40,
-        format: 1,
-        height: 2.0,
-        length: 16.0,
-        weight: 0.9,
-        width: 11.0
-    }
-  """
-  @spec build(atom(), map()) :: map()
-  def build(format, item), do: build_package(format, item)
 
   defp build_package(format, package) do
     package =
@@ -89,7 +73,7 @@ defmodule ExCorreios.Shipping.Packages.Package do
   defp volume(%{height: height, length: length, width: width} = _item),
     do: height * length * width
 
-  defp sum(key, items), do: Enum.reduce(items, 0, fn item, acc -> Map.get(item, key) + acc end)
+  defp sum(key, items), do: Enum.reduce(items, 0, fn item, acc -> Map.get(item, key, 0) + acc end)
 
   defp dimensions(dimensions) do
     %{

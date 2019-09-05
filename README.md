@@ -28,22 +28,8 @@ config :ex_correios,
 1 - Build one or more package items.
 
 ```elixir
-iex> dimensions = %{diameter: 40, width: 11.0, height: 2.0, length: 16.0, weight: 0.9}
-%ExCorreios.Shipping.Packages.PackageItem{
-  diameter: 40,
-  width: 11.0,
-  height: 2.0,
-  length: 16.0,
-  weight: 0.9
-}
-iex> dimensions2 = %{}
-%ExCorreios.Shipping.Packages.PackageItem{
-  diameter: 0.0,
-  height: 0.0,
-  length: 0.0,
-  weight: 0.0,
-  width: 0.0
-}
+iex> dimensions = %{diameter: 40.0, height: 2.0, length: 16.0, weight: 0.9, width: 11.0}
+iex> dimensions2 = %{diameter: 0.0, height: 0.0, length: 0.0, weight: 0.0, width: 0.0}
 ```
 
 2 - Build a package with an item to calculate shipping
@@ -51,11 +37,12 @@ iex> dimensions2 = %{}
 ```elixir
 iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, dimensions)
 %ExCorreios.Shipping.Packages.Package{
-  diameter: 40,
-  width: 11.0,
+  diameter: 40.0,
+  format: 1,
   height: 2.0,
   length: 16.0,
-  weight: 0.9
+  weight: 0.9,
+  width: 11.0
 }
 ```
 
@@ -65,10 +52,11 @@ iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, dimensio
 iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, dimensions2)
 %ExCorreios.Shipping.Packages.Package{
   diameter: 0.0,
-  width: 11.0,
+  format: 1,
   height: 2.0,
   length: 16.0,
-  weight: 0.0
+  weight: 0.0,
+  width: 11.0
 }
 ```
 

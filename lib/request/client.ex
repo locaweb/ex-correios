@@ -1,6 +1,6 @@
 defmodule ExCorreios.Request.Client do
   @moduledoc """
-  This module provides a http interface to communicate with Correios API.
+  This module provides an http interface to communicate with Correios API.
   """
 
   require Logger

@@ -39,6 +39,6 @@ defmodule ExCorreios.Shipping.Shipping do
       |> Map.put(:services, services)
       |> Map.put(:package, package)
 
-    struct!(__MODULE__, shipping_params)
+    struct(__MODULE__, shipping_params)
   end
 end
