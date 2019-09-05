@@ -11,7 +11,7 @@ defmodule ExCorreios.Request.Client do
   def get(url, opts \\ []) do
     url
     |> log_request()
-    |> HTTPoison.get(opts)
+    |> HTTPoison.get([], opts)
     |> Response.process()
   end
 

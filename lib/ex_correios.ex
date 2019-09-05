@@ -3,8 +3,8 @@ defmodule ExCorreios do
   This module provides a function to calculate shipping based on one or more services.
   """
 
-  @recv_timeout_default 10_000
-  @timeout_default 10_000
+  @recv_timeout_default 20_000
+  @timeout_default 20_000
 
   alias ExCorreios.Request.{Client, Url}
   alias ExCorreios.Shipping.Packages.Package

@@ -210,8 +210,8 @@ Available options and their default values:
 ```elixir
 [
   base_url: "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx", # defined in the project config.
-  recv_timeout: 5000, # timeout for establishing a TCP or SSL connection, in milliseconds.
-  timeout: 8000 # timeout for receiving an HTTP response from the socket.
+  recv_timeout: 20_000, # timeout for establishing a TCP or SSL connection, in milliseconds.
+  timeout: 20_000 # timeout for receiving an HTTP response from the socket.
 ]
 ```
 
