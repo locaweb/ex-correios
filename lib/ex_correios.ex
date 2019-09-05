@@ -64,7 +64,10 @@ defmodule ExCorreios do
   """
   @spec calculate(list(atom), %Package{}, map(), list(Keyword.t())) ::
           {:ok, list(map)} | {:error, atom()}
-  def calculate(services, package, params, opts \\ []) do
+  def calculate(services, package, params, opts \\ [])
+  def calculate([], _package, _params, _opts), do: {:error, :empty_service_list}
+
+  def calculate(services, package, params, opts) do
     base_url = Keyword.get(opts, :base_url)
     request_options = request_options(opts)
 

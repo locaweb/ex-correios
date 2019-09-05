@@ -3,7 +3,7 @@ defmodule ExCorreios.Shipping.Packages.Package do
   This module provides a package struct
   """
 
-  @enforce_keys [:format, :height, :length, :weight, :width]
+  @enforce_keys [:format, :weight]
 
   defstruct diameter: 0.0, format: nil, height: 0.0, length: 0.0, weight: 0.0, width: 0.0
 
@@ -32,6 +32,17 @@ defmodule ExCorreios.Shipping.Packages.Package do
       height: 2.0,
       length: 16.0,
       weight: 0.9,
+      width: 11.0
+    }
+
+    # it's possible to pass only the weight to build a package
+    iex> ExCorreios.Shipping.Packages.Package.build(:package_box, [%{weight: 0.3}])
+    %ExCorreios.Shipping.Packages.Package{
+      diameter: 0.0,
+      format: 1,
+      height: 2.0,
+      length: 16.0,
+      weight: 0.3,
       width: 11.0
     }
   """
@@ -73,13 +84,19 @@ defmodule ExCorreios.Shipping.Packages.Package do
   defp volume(%{height: height, length: length, width: width} = _item),
     do: height * length * width
 
+  defp volume(_item), do: 0
+
   defp sum(key, items), do: Enum.reduce(items, 0, fn item, acc -> Map.get(item, key, 0) + acc end)
 
   defp dimensions(dimensions) do
+    height = Map.get(dimensions, :height, 0)
+    length = Map.get(dimensions, :length, 0)
+    width = Map.get(dimensions, :width, 0)
+
     %{
-      height: higher_value(dimensions.height, @min_dimensions.height),
-      length: higher_value(dimensions.length, @min_dimensions.length),
-      width: higher_value(dimensions.width, @min_dimensions.width)
+      height: higher_value(height, @min_dimensions.height),
+      length: higher_value(length, @min_dimensions.length),
+      width: higher_value(width, @min_dimensions.width)
     }
   end
 

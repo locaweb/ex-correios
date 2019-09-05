@@ -60,7 +60,21 @@ iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, [dimensi
 }
 ```
 
-2.2 - Build a package with one or more items to calculate shipping
+2.2 - It's possible to pass only the weight to build a package
+
+```elixir
+iex> ExCorreios.Shipping.Packages.Package.build(:package_box, [%{weight: 0.3}])
+%ExCorreios.Shipping.Packages.Package{
+  diameter: 0.0,
+  format: 1,
+  height: 2.0,
+  length: 16.0,
+  weight: 0.3,
+  width: 11.0
+}
+```
+
+2.3 - Build a package with one or more items to calculate shipping
 
 ```elixir
 iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, [dimensions, dimensions2])

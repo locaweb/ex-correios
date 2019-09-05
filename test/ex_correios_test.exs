@@ -58,7 +58,7 @@ defmodule ExCorreiosTest do
       assert ExCorreios.calculate([:pac], package, params, base_url: base_url) == expected_result
     end
 
-    test "returns an error", %{
+    test "returns a request error", %{
       base_url: base_url,
       bypass: bypass
     } do
@@ -78,6 +78,22 @@ defmodule ExCorreiosTest do
 
       assert ExCorreios.calculate([:pac], package, params, base_url: base_url) ==
                {:error, :econnrefused}
+    end
+
+    test "returns a params error" do
+      package = build(:package)
+
+      params = %{
+        destination: "05724005",
+        origin: "08720030",
+        enterprise: "",
+        password: "",
+        receiving_alert: false,
+        declared_value: 0,
+        manually_entered: false
+      }
+
+      assert ExCorreios.calculate([], package, params) == {:error, :empty_service_list}
     end
   end
 end
