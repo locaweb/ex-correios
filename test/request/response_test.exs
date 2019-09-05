@@ -3,6 +3,8 @@ defmodule ExCorreios.Request.ResponseTest do
 
   import ExCorreios.Factory
 
+  @fixture_path "test/support/fixtures"
+
   alias ExCorreios.Request.{Response, Url}
   alias ExCorreios.Shipping.Service
 
@@ -40,17 +42,9 @@ defmodule ExCorreios.Request.ResponseTest do
       url = Url.build(shipping, base_url)
 
       Bypass.expect(bypass, fn conn ->
-        response_body = """
-        <?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n<Servicos><cServico>
-        <Codigo>04510</Codigo><Valor>19,80</Valor><PrazoEntrega>5</PrazoEntrega>
-        <ValorSemAdicionais>19,80</ValorSemAdicionais><ValorMaoPropria>0,00</ValorMaoPropria>
-        <ValorAvisoRecebimento>0,00</ValorAvisoRecebimento>
-        <ValorValorDeclarado>0,00</ValorValorDeclarado><EntregaDomiciliar>S</EntregaDomiciliar>
-        <EntregaSabado>N</EntregaSabado><obsFim></obsFim><Erro>0</Erro>
-        <MsgErro></MsgErro></cServico></Servicos>
-        """
+        correios_response = File.read!("#{@fixture_path}/correios_response.xml")
 
-        Plug.Conn.send_resp(conn, 200, response_body)
+        Plug.Conn.send_resp(conn, 200, correios_response)
       end)
 
       response = HTTPoison.get(url)
@@ -103,22 +97,9 @@ defmodule ExCorreios.Request.ResponseTest do
       url = Url.build(shipping, base_url)
 
       Bypass.expect(bypass, fn conn ->
-        response_body = """
-        <?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n<Servicos><cServico>
-        <Codigo>04510</Codigo><Valor>19,80</Valor><PrazoEntrega>5</PrazoEntrega>
-        <ValorSemAdicionais>19,80</ValorSemAdicionais><ValorMaoPropria>0,00</ValorMaoPropria>
-        <ValorAvisoRecebimento>0,00</ValorAvisoRecebimento>
-        <ValorValorDeclarado>0,00</ValorValorDeclarado><EntregaDomiciliar>S</EntregaDomiciliar>
-        <EntregaSabado>N</EntregaSabado><obsFim></obsFim><Erro>0</Erro><MsgErro></MsgErro></cServico>
-        <cServico><Codigo>04014</Codigo><Valor>19,80</Valor><PrazoEntrega>2</PrazoEntrega>
-        <ValorSemAdicionais>19,80</ValorSemAdicionais><ValorMaoPropria>0,00</ValorMaoPropria>
-        <ValorAvisoRecebimento>0,00</ValorAvisoRecebimento>
-        <ValorValorDeclarado>0,00</ValorValorDeclarado><EntregaDomiciliar>S</EntregaDomiciliar>
-        <EntregaSabado>S</EntregaSabado><obsFim></obsFim><Erro>0</Erro><MsgErro></MsgErro></cServico>
-        </Servicos>
-        """
+        correios_response = File.read!("#{@fixture_path}/correios_with_more_services_response.xml")
 
-        Plug.Conn.send_resp(conn, 200, response_body)
+        Plug.Conn.send_resp(conn, 200, correios_response)
       end)
 
       response = HTTPoison.get(url)

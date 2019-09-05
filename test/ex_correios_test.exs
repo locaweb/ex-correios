@@ -1,6 +1,8 @@
 defmodule ExCorreiosTest do
   use ExUnit.Case
 
+  @fixture_path "test/support/fixtures"
+
   import ExCorreios.Factory
 
   describe "ExCorreios.calculate/4" do
@@ -48,17 +50,9 @@ defmodule ExCorreiosTest do
       }
 
       Bypass.expect(bypass, fn conn ->
-        response_body = """
-        <?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n<Servicos><cServico>
-        <Codigo>04510</Codigo><Valor>19,80</Valor><PrazoEntrega>5</PrazoEntrega>
-        <ValorSemAdicionais>19,80</ValorSemAdicionais><ValorMaoPropria>0,00</ValorMaoPropria>
-        <ValorAvisoRecebimento>0,00</ValorAvisoRecebimento>
-        <ValorValorDeclarado>0,00</ValorValorDeclarado><EntregaDomiciliar>S</EntregaDomiciliar>
-        <EntregaSabado>N</EntregaSabado><obsFim></obsFim><Erro>0</Erro>
-        <MsgErro></MsgErro></cServico></Servicos>
-        """
+        correios_response = File.read!("#{@fixture_path}/correios_response.xml")
 
-        Plug.Conn.send_resp(conn, 200, response_body)
+        Plug.Conn.send_resp(conn, 200, correios_response)
       end)
 
       assert ExCorreios.calculate([:pac], package, params, base_url: base_url) == expected_result

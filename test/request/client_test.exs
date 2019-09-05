@@ -3,6 +3,8 @@ defmodule ExCorreios.Request.ClientTest do
 
   import ExCorreios.Factory
 
+  @fixture_path "test/support/fixtures"
+
   alias ExCorreios.Request.{Client, Url}
 
   describe "Client.get/1" do
@@ -42,17 +44,9 @@ defmodule ExCorreios.Request.ClientTest do
         |> Url.build(base_url)
 
       Bypass.expect(bypass, fn conn ->
-        response_body = """
-        <?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\n<Servicos><cServico>
-        <Codigo>04510</Codigo><Valor>19,80</Valor><PrazoEntrega>5</PrazoEntrega>
-        <ValorSemAdicionais>19,80</ValorSemAdicionais><ValorMaoPropria>0,00</ValorMaoPropria>
-        <ValorAvisoRecebimento>0,00</ValorAvisoRecebimento>
-        <ValorValorDeclarado>0,00</ValorValorDeclarado><EntregaDomiciliar>S</EntregaDomiciliar>
-        <EntregaSabado>N</EntregaSabado><obsFim></obsFim><Erro>0</Erro>
-        <MsgErro></MsgErro></cServico></Servicos>
-        """
+        correios_response = File.read!("#{@fixture_path}/correios_response.xml")
 
-        Plug.Conn.send_resp(conn, 200, response_body)
+        Plug.Conn.send_resp(conn, 200, correios_response)
       end)
 
       assert Client.get(url) == expected_response
