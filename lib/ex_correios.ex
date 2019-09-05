@@ -3,6 +3,9 @@ defmodule ExCorreios do
   This module provides a function to calculate shipping based on one or more services.
   """
 
+  @recv_timeout_default 10_000
+  @timeout_default 10_000
+
   alias ExCorreios.Request.{Client, Url}
   alias ExCorreios.Shipping.Packages.Package
   alias ExCorreios.Shipping.Shipping
@@ -12,7 +15,7 @@ defmodule ExCorreios do
 
   ## Examples
 
-      iex> dimensions = %{diameter: 40, width: 11.0, height: 2.0, length: 16.0, weight: 0.9}
+      iex> dimensions = [%{diameter: 40, width: 11.0, height: 2.0, length: 16.0, weight: 0.9}]
       iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, dimensions)
       iex> shipping_params = %{
       ...>  destination: "05724005",
@@ -59,14 +62,22 @@ defmodule ExCorreios do
         ]
       }
   """
-  @spec calculate(list(atom), %Package{}, map(), String.t()) ::
-          {:ok, list(map)} | {:error, String.t()}
+  @spec calculate(list(atom), %Package{}, map(), list(Keyword.t())) ::
+          {:ok, list(map)} | {:error, atom()}
   def calculate(services, package, params, opts \\ []) do
     base_url = Keyword.get(opts, :base_url)
+    request_options = request_options(opts)
 
     services
     |> Shipping.new(package, params)
     |> Url.build(base_url)
-    |> Client.get()
+    |> Client.get(request_options)
+  end
+
+  defp request_options(opts) do
+    recv_timeout = Keyword.get(opts, :recv_timeout, @recv_timeout_default)
+    timeout = Keyword.get(opts, :timeout, @timeout_default)
+
+    [recv_timeout: recv_timeout, timeout: timeout]
   end
 end

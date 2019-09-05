@@ -24,8 +24,8 @@ defmodule ExCorreios.Shipping.Packages.Package do
   Build a package with one or more items to calculate shipping
 
   ## Examples
-    iex> dimensions = %{diameter: 40, height: 2.0, length: 16.0, weight: 0.9, width: 11.0}
-    iex> ExCorreios.Shipping.Packages.Package.build(:package_box, [dimensions])
+    iex> dimensions = [%{diameter: 40, height: 2.0, length: 16.0, weight: 0.9, width: 11.0}]
+    iex> ExCorreios.Shipping.Packages.Package.build(:package_box, dimensions)
     %ExCorreios.Shipping.Packages.Package{
       diameter: 40,
       format: 1,

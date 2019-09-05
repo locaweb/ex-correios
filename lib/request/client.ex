@@ -8,10 +8,10 @@ defmodule ExCorreios.Request.Client do
   alias ExCorreios.Request.Response
 
   @spec get(String.t()) :: {:ok, list(struct)} | {:error, String.t()}
-  def get(url) do
+  def get(url, opts \\ []) do
     url
     |> log_request()
-    |> HTTPoison.get()
+    |> HTTPoison.get(opts)
     |> Response.process()
   end
 

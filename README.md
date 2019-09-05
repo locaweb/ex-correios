@@ -9,7 +9,7 @@ Add ExCorreios to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:ex_correios, git: "https://code.locaweb.com.br/criador-sites/ex_correios"}
+    {:ex_correios, git: "https://code.locaweb.com.br/criador-sites/ex-correios"}
   ]
 end
 ```
@@ -25,7 +25,7 @@ config :ex_correios,
 
 ## Getting started
 
-1 - Build one or more package items.
+1 - Build one or more package items
 
 ```elixir
 iex> dimensions = %{diameter: 40.0, height: 2.0, length: 16.0, weight: 0.9, width: 11.0}
@@ -35,7 +35,7 @@ iex> dimensions2 = %{diameter: 0.0, height: 0.0, length: 0.0, weight: 0.0, width
 2 - Build a package with an item to calculate shipping
 
 ```elixir
-iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, dimensions)
+iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, [dimensions])
 %ExCorreios.Shipping.Packages.Package{
   diameter: 40.0,
   format: 1,
@@ -46,10 +46,10 @@ iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, dimensio
 }
 ```
 
-2.1 - When the package dimensions is smaller than the min dimensions accepted, we'll use the min dimensions defined by the correios.
+2.1 - When the package dimensions is smaller than the min dimensions accepted, we'll use the min dimensions defined by the correios
 
 ```elixir
-iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, dimensions2)
+iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, [dimensions2])
 %ExCorreios.Shipping.Packages.Package{
   diameter: 0.0,
   format: 1,
@@ -74,7 +74,7 @@ iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, [dimensi
 }
 ```
 
-3 - Calculate shipping based on one or more services.
+3 - Calculate shipping based on one or more services
 
 ```elixir
 iex> shipping_params = %{
@@ -189,11 +189,23 @@ iex> ExCorreios.calculate([:pac, :sedex_hoje], package, shipping_params)
 {:error, :timeout}
 ```
 
+3.3 - Options
+
+Available options and their default values:
+
+```elixir
+[
+  base_url: "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx", # defined in the project config.
+  recv_timeout: 5000, # timeout for establishing a TCP or SSL connection, in milliseconds.
+  timeout: 8000 # timeout for receiving an HTTP response from the socket.
+]
+```
+
 ## Running tests
 
 ```
-$ git clone https://code.locaweb.com.br/criador-sites/ex_correios.git
-$ cd ex_correios
+$ git clone https://code.locaweb.com.br/criador-sites/ex-correios.git
+$ cd ex-correios
 $ mix deps.get
 $ mix test --trace
 ```
