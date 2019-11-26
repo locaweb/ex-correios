@@ -13,7 +13,7 @@ defmodule ExCorreios.Shipping.Shipping do
             package: nil,
             password: nil,
             receiving_alert: false,
-            services: nil
+            service: nil
 
   @type t :: %__MODULE__{
           declared_value: String.t(),
@@ -24,19 +24,17 @@ defmodule ExCorreios.Shipping.Shipping do
           package: struct(),
           password: String.t(),
           receiving_alert: String.t(),
-          services: List.t()
+          service: List.t()
         }
 
   alias ExCorreios.Shipping.Packages.Package
   alias ExCorreios.Shipping.Service
 
-  @spec new(list(atom), %Package{}, map()) :: %__MODULE__{}
-  def new(service_keys, package, params) do
-    services = Service.get_services(service_keys)
-
+  @spec new(atom(), %Package{}, map()) :: __MODULE__.t()
+  def new(service, package, params) do
     shipping_params =
       params
-      |> Map.put(:services, services)
+      |> Map.put(:service, Service.get_service(service))
       |> Map.put(:package, package)
 
     struct(__MODULE__, shipping_params)

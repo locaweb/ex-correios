@@ -13,7 +13,7 @@ defmodule ExCorreios.Request.Url do
   defp format_params(%{package: package} = shipping) do
     "nCdEmpresa=#{shipping.enterprise}&" <>
       "sDsSenha=#{shipping.password}&" <>
-      "nCdServico=#{format_services(shipping.services)}&" <>
+      "nCdServico=#{shipping.service.code}&" <>
       "sCepOrigem=#{shipping.origin}&" <>
       "sCepDestino=#{shipping.destination}&" <>
       "nVlPeso=#{package.weight}&" <>
@@ -32,12 +32,6 @@ defmodule ExCorreios.Request.Url do
 
   defp base_url(nil), do: Application.get_env(:ex_correios, :base_url)
   defp base_url(url), do: url
-
-  defp format_services(services) do
-    services
-    |> Enum.map(fn {_k, v} -> v.code end)
-    |> Enum.join(",")
-  end
 
   defp format_boolean(true), do: "S"
   defp format_boolean(false), do: "N"

@@ -13,8 +13,11 @@ defmodule ExCorreios.Request.Response do
   @spec process({:error, %HTTPoison.Error{}}) :: {:error, String.t()}
   def process({:error, %HTTPoison.Error{reason: reason}}), do: {:error, reason}
 
-  defp parser(body),
-    do: xpath(body, %SweetXpath{path: @root_path, is_list: true}, shipping_path())
+  defp parser(body) do
+    body
+    |> xpath(%SweetXpath{path: @root_path, is_list: true}, shipping_path())
+    |> List.first()
+  end
 
   defp shipping_path do
     [

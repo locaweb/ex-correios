@@ -3,12 +3,13 @@ defmodule ExCorreios do
   This module provides a function to calculate shipping based on one or more services.
   """
 
-  @recv_timeout_default 20_000
-  @timeout_default 20_000
+  @timeout_default 10_000
 
   alias ExCorreios.Request.{Client, Url}
   alias ExCorreios.Shipping.Packages.Package
   alias ExCorreios.Shipping.Shipping
+
+  @typep address :: %{city: String.t(), complement: String.t(), neighborhood: String.t(), state: String.t(), street: String.t(), zipcode: String.t()}
 
   @doc """
   Calculate shipping based on one or more services.
@@ -68,17 +69,41 @@ defmodule ExCorreios do
   def calculate([], _package, _params, _opts), do: {:error, :empty_service_list}
 
   def calculate(services, package, params, opts) do
+    results =
+      services
+      |> Task.async_stream(&calculate_service(&1, package, params, opts), timeout: @timeout_default)
+      |> Enum.map(fn {:ok, result} -> result end)
+
+    results
+    |> Enum.all?(&match?({:ok, _}, &1))
+    |> Kernel.&&({:ok, format_results(results)})
+    |> Kernel.||({:error, "Error to fetching a service."})
+  end
+
+  @spec find_address(String.t()) :: {:ok, address()} | {:error, %{reason: String.t()}}
+  def find_address(postal_code) do
+    {status, address} = Correios.CEP.find_address(postal_code)
+    {status, Map.from_struct(address)}
+  end
+
+  defp format_results(results),
+    do: Enum.map(results, fn {:ok, result} -> result end)
+
+  defp calculate_service(service, package, params, opts) do
     base_url = Keyword.get(opts, :base_url)
     request_options = request_options(opts)
 
-    services
-    |> Shipping.new(package, params)
-    |> Url.build(base_url)
-    |> Client.get(request_options)
+    {status, result} =
+      service
+      |> Shipping.new(package, params)
+      |> Url.build(base_url)
+      |> Client.get(request_options)
+
+    {status, Map.put(result, :service, service)}
   end
 
   defp request_options(opts) do
-    recv_timeout = Keyword.get(opts, :recv_timeout, @recv_timeout_default)
+    recv_timeout = Keyword.get(opts, :recv_timeout, @timeout_default)
     timeout = Keyword.get(opts, :timeout, @timeout_default)
 
     [recv_timeout: recv_timeout, timeout: timeout]

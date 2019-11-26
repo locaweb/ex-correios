@@ -55,6 +55,6 @@ defmodule ExCorreios.Shipping.Service do
     }
   }
 
-  @spec get_services(list(atom)) :: list(tuple)
-  def get_services(services), do: Map.take(@available_services, services)
+  @spec get_service(atom) :: map()
+  def get_service(service), do: @available_services[service]
 end
