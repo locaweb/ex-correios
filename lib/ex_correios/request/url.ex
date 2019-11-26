@@ -5,7 +5,7 @@ defmodule ExCorreios.Request.Url do
 
   @default_return "xml"
 
-  alias ExCorreios.Shipping.Shipping
+  alias ExCorreios.Shipping
 
   @spec build(%Shipping{}, String.t()) :: String.t()
   def build(shipping, base_url \\ nil), do: "#{base_url(base_url)}?#{format_params(shipping)}"

@@ -15,26 +15,25 @@ defmodule ExCorreios.Request.ClientTest do
       [base_url: base_url, bypass: bypass]
     end
 
+    @tag :capture_log
     test "returns the success request result", %{base_url: base_url, bypass: bypass} do
       expected_response =
         {:ok,
-         [
-           %{
-             deadline: 5,
-             declared_value: 0.0,
-             error_code: "0",
-             error_message: "",
-             home_delivery: "S",
-             manually_entered_value: 0.0,
-             notes: "",
-             receiving_alert_value: 0.0,
-             response_status: "0",
-             saturday_delivery: "N",
-             service_code: "04510",
-             value: 19.8,
-             value_without_additionals: 19.8
-           }
-         ]}
+         %{
+           deadline: 5,
+           declared_value: 0.0,
+           error_code: "0",
+           error_message: "",
+           home_delivery: "S",
+           manually_entered_value: 0.0,
+           notes: "",
+           receiving_alert_value: 0.0,
+           response_status: "0",
+           saturday_delivery: "N",
+           service_code: "04510",
+           value: 19.8,
+           value_without_additionals: 19.8
+         }}
 
       package = build(:package)
 
@@ -52,6 +51,7 @@ defmodule ExCorreios.Request.ClientTest do
       assert Client.get(url) == expected_response
     end
 
+    @tag :capture_log
     test "returns an error request result", %{
       base_url: base_url,
       bypass: bypass
@@ -71,7 +71,7 @@ defmodule ExCorreios.Request.ClientTest do
       Bypass.down(bypass)
 
       assert ExCorreios.calculate([:pac], package, params, base_url: base_url) ==
-               {:error, :econnrefused}
+               {:error, "Error to fetching services."}
     end
   end
 end

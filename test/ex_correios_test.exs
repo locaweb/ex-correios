@@ -13,6 +13,7 @@ defmodule ExCorreiosTest do
       [base_url: base_url, bypass: bypass]
     end
 
+    @tag :capture_log
     test "returns shipping value calculated based in a service", %{
       base_url: base_url,
       bypass: bypass
@@ -32,6 +33,7 @@ defmodule ExCorreiosTest do
              response_status: "0",
              saturday_delivery: "N",
              service_code: "04510",
+             service: :pac,
              value: 19.8,
              value_without_additionals: 19.8
            }
@@ -58,6 +60,7 @@ defmodule ExCorreiosTest do
       assert ExCorreios.calculate([:pac], package, params, base_url: base_url) == expected_result
     end
 
+    @tag :capture_log
     test "returns a request error", %{
       base_url: base_url,
       bypass: bypass
@@ -77,9 +80,10 @@ defmodule ExCorreiosTest do
       Bypass.down(bypass)
 
       assert ExCorreios.calculate([:pac], package, params, base_url: base_url) ==
-               {:error, :econnrefused}
+               {:error, "Error to fetching services."}
     end
 
+    @tag :capture_log
     test "returns a params error" do
       package = build(:package)
 

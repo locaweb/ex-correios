@@ -1,9 +1,9 @@
-defmodule ExCorreios.Shipping.Shipping do
+defmodule ExCorreios.Shipping do
   @moduledoc """
   This module provides a shipping struct.
   """
 
-  @enforce_keys [:destination, :package, :origin, :services]
+  @enforce_keys [:destination, :package, :origin, :service]
 
   defstruct declared_value: 0,
             destination: nil,
@@ -27,8 +27,7 @@ defmodule ExCorreios.Shipping.Shipping do
           service: List.t()
         }
 
-  alias ExCorreios.Shipping.Packages.Package
-  alias ExCorreios.Shipping.Service
+  alias ExCorreios.Shipping.{Package, Service}
 
   @spec new(atom(), %Package{}, map()) :: __MODULE__.t()
   def new(service, package, params) do

@@ -1,7 +1,7 @@
-defmodule ExCorreios.Shipping.Packages.PackageTest do
-  use ExUnit.Case
+defmodule ExCorreios.Shipping.PackageTest do
+  use ExUnit.Case, async: true
 
-  alias ExCorreios.Shipping.Packages.Package
+  alias ExCorreios.Shipping.Package
 
   describe "Package.build/2" do
     test "returns a built package" do

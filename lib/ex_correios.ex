@@ -6,10 +6,17 @@ defmodule ExCorreios do
   @timeout_default 10_000
 
   alias ExCorreios.Request.{Client, Url}
-  alias ExCorreios.Shipping.Packages.Package
-  alias ExCorreios.Shipping.Shipping
+  alias ExCorreios.Shipping
+  alias ExCorreios.Shipping.Package
 
-  @typep address :: %{city: String.t(), complement: String.t(), neighborhood: String.t(), state: String.t(), street: String.t(), zipcode: String.t()}
+  @typep address :: %{
+           city: String.t(),
+           complement: String.t(),
+           neighborhood: String.t(),
+           state: String.t(),
+           street: String.t(),
+           zipcode: String.t()
+         }
 
   @doc """
   Calculate shipping based on one or more services.
@@ -71,13 +78,15 @@ defmodule ExCorreios do
   def calculate(services, package, params, opts) do
     results =
       services
-      |> Task.async_stream(&calculate_service(&1, package, params, opts), timeout: @timeout_default)
-      |> Enum.map(fn {:ok, result} -> result end)
+      |> Task.async_stream(&calculate_service(&1, package, params, opts),
+        timeout: @timeout_default
+      )
+      |> Enum.map(&elem(&1, 1))
 
     results
     |> Enum.all?(&match?({:ok, _}, &1))
     |> Kernel.&&({:ok, format_results(results)})
-    |> Kernel.||({:error, "Error to fetching a service."})
+    |> Kernel.||({:error, "Error to fetching services."})
   end
 
   @spec find_address(String.t()) :: {:ok, address()} | {:error, %{reason: String.t()}}
@@ -93,13 +102,15 @@ defmodule ExCorreios do
     base_url = Keyword.get(opts, :base_url)
     request_options = request_options(opts)
 
-    {status, result} =
+    request =
       service
       |> Shipping.new(package, params)
       |> Url.build(base_url)
       |> Client.get(request_options)
 
-    {status, Map.put(result, :service, service)}
+    with {:ok, result} when is_map(result) <- request do
+      {:ok, Map.put(result, :service, service)}
+    end
   end
 
   defp request_options(opts) do
