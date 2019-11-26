@@ -52,7 +52,7 @@ defmodule ExCorreiosTest do
       }
 
       Bypass.expect(bypass, fn conn ->
-        correios_response = File.read!("#{@fixture_path}/correios_response.xml")
+        correios_response = File.read!("#{@fixture_path}/correios_calculator_response.xml")
 
         Plug.Conn.send_resp(conn, 200, correios_response)
       end)
@@ -98,6 +98,25 @@ defmodule ExCorreiosTest do
       }
 
       assert ExCorreios.calculate([], package, params) == {:error, :empty_service_list}
+    end
+  end
+
+  describe "ExCorreios.find_address/1" do
+    test "returns an address by a valid postal code" do
+      {:ok, address} = ExCorreios.find_address("35588-000")
+
+      assert address == %{
+               city: "Arcos",
+               complement: "",
+               neighborhood: "Centro",
+               state: "MG",
+               street: "Avenida Magalhães Pinto",
+               zipcode: "35588-000"
+             }
+    end
+
+    test "returns an error with a reason" do
+      assert {:error, %{reason: "CEP NAO ENCONTRADO"}} = ExCorreios.find_address("00000-000")
     end
   end
 end

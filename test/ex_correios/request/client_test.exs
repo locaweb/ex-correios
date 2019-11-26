@@ -43,7 +43,7 @@ defmodule ExCorreios.Request.ClientTest do
         |> Url.build(base_url)
 
       Bypass.expect(bypass, fn conn ->
-        correios_response = File.read!("#{@fixture_path}/correios_response.xml")
+        correios_response = File.read!("#{@fixture_path}/correios_calculator_response.xml")
 
         Plug.Conn.send_resp(conn, 200, correios_response)
       end)
