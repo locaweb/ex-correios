@@ -5,73 +5,48 @@ defmodule ExCorreios.Request.ClientTest do
 
   @fixture_path "test/support/fixtures"
 
-  alias ExCorreios.Request.{Client, Url}
+  alias ExCorreios.Calculator.Request.Url
+  alias ExCorreios.Request.Client
 
   describe "Client.get/1" do
     setup do
       bypass = Bypass.open()
-      base_url = "http://localhost:#{bypass.port}"
+      calculator_url = "http://localhost:#{bypass.port}"
 
-      [base_url: base_url, bypass: bypass]
+      [bypass: bypass, calculator_url: calculator_url]
     end
 
     @tag :capture_log
-    test "returns the success request result", %{base_url: base_url, bypass: bypass} do
-      expected_response =
-        {:ok,
-         %{
-           deadline: 5,
-           declared_value: 0.0,
-           error_code: "0",
-           error_message: "",
-           home_delivery: "S",
-           manually_entered_value: 0.0,
-           notes: "",
-           receiving_alert_value: 0.0,
-           response_status: "0",
-           saturday_delivery: "N",
-           service_code: "04510",
-           value: 19.8,
-           value_without_additionals: 19.8
-         }}
-
+    test "returns a success request result", %{bypass: bypass, calculator_url: calculator_url} do
+      correios_response = File.read!("#{@fixture_path}/correios_calculator_response.xml")
       package = build(:package)
 
       url =
         :shipping
         |> build(package: package)
-        |> Url.build(base_url)
+        |> Url.build(calculator_url)
 
       Bypass.expect(bypass, fn conn ->
-        correios_response = File.read!("#{@fixture_path}/correios_calculator_response.xml")
-
         Plug.Conn.send_resp(conn, 200, correios_response)
       end)
 
-      assert Client.get(url) == expected_response
+      assert {:ok, %{status_code: 200, body: ^correios_response}} = Client.get(url)
     end
 
     @tag :capture_log
-    test "returns an error request result", %{
-      base_url: base_url,
-      bypass: bypass
-    } do
+    test "returns an error request", %{bypass: bypass, calculator_url: calculator_url} do
       package = build(:package)
 
-      params = %{
-        destination: "05724005",
-        origin: "08720030",
-        enterprise: "",
-        password: "",
-        receiving_alert: false,
-        declared_value: 0,
-        manually_entered: false
-      }
+      url =
+        :shipping
+        |> build(package: package)
+        |> Url.build(calculator_url)
 
-      Bypass.down(bypass)
+      Bypass.expect(bypass, fn conn ->
+        Plug.Conn.send_resp(conn, 400, "Bad gateway")
+      end)
 
-      assert ExCorreios.calculate([:pac], package, params, base_url: base_url) ==
-               {:error, "Error to fetching services."}
+      assert {:ok, %{status_code: 400, body: "Bad gateway"}} = Client.get(url)
     end
   end
 end

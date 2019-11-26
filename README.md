@@ -1,6 +1,11 @@
 # ExCorreios
 
-Elixir client that integrates with Correios API. It calculates price and deadline shipping.
+Elixir client that integrates with Correios API.
+
+## Features:
+
+- Calculate shipping price and deadline;
+- Search an address by postal code.
 
 ## Installation
 
@@ -20,7 +25,7 @@ Add the following config to your config.exs file:
 
 ```elixir
 config :ex_correios,
-  base_url: "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx"
+  calculator_url: "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx"
 ```
 
 ## Getting started
@@ -35,8 +40,8 @@ iex> dimensions2 = %{diameter: 0.0, height: 0.0, length: 0.0, weight: 0.0, width
 2 - Build a package with an item to calculate shipping
 
 ```elixir
-iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, [dimensions])
-%ExCorreios.Shipping.Packages.Package{
+iex> package = ExCorreios.Calculator.Shipping.Package.build(:package_box, [dimensions])
+%ExCorreios.Calculator.Shipping.Package{
   diameter: 40.0,
   format: 1,
   height: 2.0,
@@ -49,8 +54,8 @@ iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, [dimensi
 2.1 - When the package dimensions is smaller than the min dimensions accepted, we'll use the min dimensions defined by the correios
 
 ```elixir
-iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, [dimensions2])
-%ExCorreios.Shipping.Packages.Package{
+iex> package = ExCorreios.Calculator.Shipping.Package.build(:package_box, [dimensions2])
+%ExCorreios.Calculator.Shipping.Package{
   diameter: 0.0,
   format: 1,
   height: 2.0,
@@ -63,8 +68,8 @@ iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, [dimensi
 2.2 - It's possible to pass only the weight to build a package
 
 ```elixir
-iex> ExCorreios.Shipping.Packages.Package.build(:package_box, [%{weight: 0.3}])
-%ExCorreios.Shipping.Packages.Package{
+iex> ExCorreios.Calculator.Shipping.Package.build(:package_box, [%{weight: 0.3}])
+%ExCorreios.Calculator.Shipping.Package{
   diameter: 0.0,
   format: 1,
   height: 2.0,
@@ -77,8 +82,8 @@ iex> ExCorreios.Shipping.Packages.Package.build(:package_box, [%{weight: 0.3}])
 2.3 - Build a package with one or more items to calculate shipping
 
 ```elixir
-iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, [dimensions, dimensions2])
-%ExCorreios.Shipping.Packages.Package{
+iex> package = ExCorreios.Calculator.Shipping.Package.build(:package_box, [dimensions, dimensions2])
+%ExCorreios.Calculator.Shipping.Package{
   diameter: 40.0,
   format: 1,
   height: 7.06,
@@ -115,6 +120,7 @@ iex> ExCorreios.calculate([:pac], package, shipping_params)
       response_status: "0",
       saturday_delivery: "N",
       service_code: "04510",
+      service: :pac,
       value: 19.8,
       value_without_additionals: 19.8
     }
@@ -135,6 +141,7 @@ iex> ExCorreios.calculate([:pac, :sedex], package, shipping_params)
       response_status: "0",
       saturday_delivery: "N",
       service_code: "04510",
+      service: :pac,
       value: 19.8,
       value_without_additionals: 19.8
     },
@@ -150,6 +157,7 @@ iex> ExCorreios.calculate([:pac, :sedex], package, shipping_params)
       response_status: "0",
       saturday_delivery: "S",
       service_code: "04014",
+      service: :sedex,
       value: 21.2,
       value_without_additionals: 21.2
     }
@@ -175,6 +183,7 @@ iex> ExCorreios.calculate([:pac, :sedex_hoje], package, shipping_params)
      response_status: "0",
      saturday_delivery: "N",
      service_code: "04510",
+     service: :pac,
      value: 19.8,
      value_without_additionals: 19.8
    },
@@ -190,6 +199,7 @@ iex> ExCorreios.calculate([:pac, :sedex_hoje], package, shipping_params)
      response_status: "008",
      saturday_delivery: "",
      service_code: "40290",
+     service: :sedex_hoje,
      value: 0.0,
      value_without_additionals: 0.0
    }
@@ -200,7 +210,7 @@ iex> ExCorreios.calculate([:pac, :sedex_hoje], package, shipping_params)
 
 ```elixir
 iex> ExCorreios.calculate([:pac, :sedex_hoje], package, shipping_params)
-{:error, :timeout}
+{:error, "Error to fetching services."}
 ```
 
 3.3 - Options
@@ -209,7 +219,7 @@ Available options and their default values:
 
 ```elixir
 [
-  base_url: "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx", # defined in the project config.
+  calculator_url: "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx", # defined in the project config.
   recv_timeout: 20_000, # timeout for establishing a TCP or SSL connection, in milliseconds.
   timeout: 20_000 # timeout for receiving an HTTP response from the socket.
 ]

@@ -1,4 +1,4 @@
-defmodule ExCorreios.Shipping do
+defmodule ExCorreios.Calculator.Shipping do
   @moduledoc """
   This module provides a shipping struct.
   """
@@ -27,7 +27,7 @@ defmodule ExCorreios.Shipping do
           service: List.t()
         }
 
-  alias ExCorreios.Shipping.{Package, Service}
+  alias ExCorreios.Calculator.Shipping.{Package, Service}
 
   @spec new(atom(), %Package{}, map()) :: __MODULE__.t()
   def new(service, package, params) do

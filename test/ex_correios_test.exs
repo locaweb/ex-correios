@@ -1,21 +1,21 @@
 defmodule ExCorreiosTest do
   use ExUnit.Case
 
-  @fixture_path "test/support/fixtures"
-
   import ExCorreios.Factory
+
+  @fixture_path "test/support/fixtures"
 
   describe "ExCorreios.calculate/4" do
     setup do
       bypass = Bypass.open()
-      base_url = "http://localhost:#{bypass.port}"
+      calculator_url = "http://localhost:#{bypass.port}"
 
-      [base_url: base_url, bypass: bypass]
+      [calculator_url: calculator_url, bypass: bypass]
     end
 
     @tag :capture_log
     test "returns shipping value calculated based in a service", %{
-      base_url: base_url,
+      calculator_url: calculator_url,
       bypass: bypass
     } do
       expected_result =
@@ -57,12 +57,13 @@ defmodule ExCorreiosTest do
         Plug.Conn.send_resp(conn, 200, correios_response)
       end)
 
-      assert ExCorreios.calculate([:pac], package, params, base_url: base_url) == expected_result
+      assert ExCorreios.calculate([:pac], package, params, calculator_url: calculator_url) ==
+               expected_result
     end
 
     @tag :capture_log
     test "returns a request error", %{
-      base_url: base_url,
+      calculator_url: calculator_url,
       bypass: bypass
     } do
       package = build(:package)
@@ -79,7 +80,7 @@ defmodule ExCorreiosTest do
 
       Bypass.down(bypass)
 
-      assert ExCorreios.calculate([:pac], package, params, base_url: base_url) ==
+      assert ExCorreios.calculate([:pac], package, params, calculator_url: calculator_url) ==
                {:error, "Error to fetching services."}
     end
 

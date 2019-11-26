@@ -1,4 +1,4 @@
-defmodule ExCorreios.Shipping.Service do
+defmodule ExCorreios.Calculator.Shipping.Service do
   @moduledoc """
   This module describes one or more shipping services.
   """

@@ -3,11 +3,9 @@ defmodule ExCorreios do
   This module provides a function to calculate shipping based on one or more services.
   """
 
-  @timeout_default 10_000
-
-  alias ExCorreios.Request.{Client, Url}
-  alias ExCorreios.Shipping
-  alias ExCorreios.Shipping.Package
+  alias Correios.CEP
+  alias ExCorreios.Calculator
+  alias ExCorreios.Calculator.Shipping.Package
 
   @typep address :: %{
            city: String.t(),
@@ -26,14 +24,14 @@ defmodule ExCorreios do
       iex> dimensions = [%{diameter: 40, width: 11.0, height: 2.0, length: 16.0, weight: 0.9}]
       iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, dimensions)
       iex> shipping_params = %{
-      ...>  destination: "05724005",
-      ...>  origin: "08720030",
-      ...>  enterprise: "",
-      ...>  password: "",
-      ...>  receiving_alert: false,
-      ...>  declared_value: 0,
-      ...>  manually_entered: false
-      ...> }
+        destination: "05724005",
+        origin: "08720030",
+        enterprise: "",
+        password: "",
+        receiving_alert: false,
+        declared_value: 0,
+        manually_entered: false
+      }
       iex> ExCorreios.calculate([:pac, :sedex], package, shipping_params)
       {:ok,
         [
@@ -72,51 +70,31 @@ defmodule ExCorreios do
   """
   @spec calculate(list(atom), %Package{}, map(), list(Keyword.t())) ::
           {:ok, list(map)} | {:error, atom()}
-  def calculate(services, package, params, opts \\ [])
-  def calculate([], _package, _params, _opts), do: {:error, :empty_service_list}
+  defdelegate calculate(services, package, params), to: Calculator
+  defdelegate calculate(services, package, params, opts), to: Calculator
 
-  def calculate(services, package, params, opts) do
-    results =
-      services
-      |> Task.async_stream(&calculate_service(&1, package, params, opts),
-        timeout: @timeout_default
-      )
-      |> Enum.map(&elem(&1, 1))
+  @doc """
+  Finds an address by a postal code.
 
-    results
-    |> Enum.all?(&match?({:ok, _}, &1))
-    |> Kernel.&&({:ok, format_results(results)})
-    |> Kernel.||({:error, "Error to fetching services."})
-  end
+  ## Examples
 
+      iex> ExCorreios.find_address("35588-000")
+      {:ok,
+         %{
+           city: "Arcos",
+           complement: "",
+           neighborhood: "",
+           state: "MG",
+           street: "",
+           zipcode: "35588000"
+         }}
+
+      iex> ExCorreios.find_address("00000-000")
+      {:error, %{reason: "CEP INVÁLIDO"}}
+  """
   @spec find_address(String.t()) :: {:ok, address()} | {:error, %{reason: String.t()}}
   def find_address(postal_code) do
-    {status, address} = Correios.CEP.find_address(postal_code)
+    {status, address} = CEP.find_address(postal_code)
     {status, Map.from_struct(address)}
-  end
-
-  defp format_results(results),
-    do: Enum.map(results, fn {:ok, result} -> result end)
-
-  defp calculate_service(service, package, params, opts) do
-    base_url = Keyword.get(opts, :base_url)
-    request_options = request_options(opts)
-
-    request =
-      service
-      |> Shipping.new(package, params)
-      |> Url.build(base_url)
-      |> Client.get(request_options)
-
-    with {:ok, result} when is_map(result) <- request do
-      {:ok, Map.put(result, :service, service)}
-    end
-  end
-
-  defp request_options(opts) do
-    recv_timeout = Keyword.get(opts, :recv_timeout, @timeout_default)
-    timeout = Keyword.get(opts, :timeout, @timeout_default)
-
-    [recv_timeout: recv_timeout, timeout: timeout]
   end
 end

@@ -1,21 +1,21 @@
-defmodule ExCorreios.Request.ResponseTest do
+defmodule ExCorreios.Calculator.Request.ResponseTest do
   use ExUnit.Case, async: true
 
   import ExCorreios.Factory
 
   @fixture_path "test/support/fixtures"
 
-  alias ExCorreios.Request.{Response, Url}
+  alias ExCorreios.Calculator.Request.{Response, Url}
 
   describe "Response.process/1" do
     setup do
       bypass = Bypass.open()
-      base_url = "http://localhost:#{bypass.port}"
+      calculator_url = "http://localhost:#{bypass.port}"
 
-      [base_url: base_url, bypass: bypass]
+      [calculator_url: calculator_url, bypass: bypass]
     end
 
-    test "returns a processed response", %{base_url: base_url, bypass: bypass} do
+    test "returns a processed response", %{calculator_url: calculator_url, bypass: bypass} do
       expected_response =
         {:ok,
          %{
@@ -36,7 +36,7 @@ defmodule ExCorreios.Request.ResponseTest do
 
       package = build(:package)
       shipping = build(:shipping, package: package)
-      url = Url.build(shipping, base_url)
+      url = Url.build(shipping, calculator_url)
 
       Bypass.expect(bypass, fn conn ->
         correios_response = File.read!("#{@fixture_path}/correios_calculator_response.xml")

@@ -3,8 +3,8 @@ defmodule ExCorreios.Factory do
 
   use ExMachina
 
-  alias ExCorreios.Shipping
-  alias ExCorreios.Shipping.{Package, Service}
+  alias ExCorreios.Calculator.Shipping
+  alias ExCorreios.Calculator.Shipping.{Package, Service}
 
   def package_factory do
     %Package{diameter: 40, format: 1, width: 11.0, height: 2.0, length: 16.0, weight: 0.3}

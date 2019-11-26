@@ -1,4 +1,4 @@
-defmodule ExCorreios.Request.Response do
+defmodule ExCorreios.Calculator.Request.Response do
   @moduledoc """
   This module transforms a xml body of an http response into a map or a list of maps.
   """

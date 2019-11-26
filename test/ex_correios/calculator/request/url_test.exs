@@ -1,10 +1,10 @@
-defmodule ExCorreios.Request.UrlTest do
+defmodule ExCorreios.Calculator.Request.UrlTest do
   use ExUnit.Case, async: true
 
   import ExCorreios.Factory
 
-  alias ExCorreios.Request.Url
-  alias ExCorreios.Shipping.Service
+  alias ExCorreios.Calculator.Request.Url
+  alias ExCorreios.Calculator.Shipping.Service
 
   describe "Url.build/1" do
     test "returns a formatted" do

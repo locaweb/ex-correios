@@ -1,9 +1,9 @@
-defmodule ExCorreios.ShippingTest do
+defmodule ExCorreios.Calculator.ShippingTest do
   use ExUnit.Case, async: true
 
   import ExCorreios.Factory
 
-  alias ExCorreios.Shipping
+  alias ExCorreios.Calculator.Shipping
 
   describe "Shipping.new/3" do
     test "returns a shipping struct" do

@@ -1,7 +1,7 @@
-defmodule ExCorreios.Shipping.ServiceTest do
+defmodule ExCorreios.Calculator.Shipping.ServiceTest do
   use ExUnit.Case, async: true
 
-  alias ExCorreios.Shipping.Service
+  alias ExCorreios.Calculator.Shipping.Service
 
   describe "Service.get_service/1" do
     test "returns a service" do
