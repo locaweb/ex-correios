@@ -24,6 +24,7 @@ defmodule ExCorreiosTest do
            %{
              deadline: 5,
              declared_value: 0.0,
+             error: nil,
              error_code: "0",
              error_message: "",
              home_delivery: "S",
