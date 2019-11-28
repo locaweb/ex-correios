@@ -44,7 +44,8 @@ defmodule ExCorreios.Calculator do
       |> Response.process()
 
     with {:ok, result} when is_map(result) <- request do
-      {:ok, Map.put(result, :service, service)}
+      service = service |> to_string() |> String.upcase()
+      {:ok, Map.put(result, :name, service)}
     end
   end
 
