@@ -1,5 +1,5 @@
 defmodule ExCorreiosTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   import ExCorreios.Factory
 
@@ -10,7 +10,7 @@ defmodule ExCorreiosTest do
       bypass = Bypass.open()
       calculator_url = "http://localhost:#{bypass.port}"
 
-      [calculator_url: calculator_url, bypass: bypass]
+      %{calculator_url: calculator_url, bypass: bypass}
     end
 
     @tag :capture_log
@@ -105,16 +105,16 @@ defmodule ExCorreiosTest do
 
   describe "ExCorreios.find_address/1" do
     test "returns an address by a valid postal code" do
-      {:ok, address} = ExCorreios.find_address("35588-000")
-
-      assert address == %{
-               city: "Arcos",
-               complement: "",
-               neighborhood: "Centro",
-               state: "MG",
-               street: "Avenida Magalhães Pinto",
-               zipcode: "35588-000"
-             }
+      assert ExCorreios.find_address("35588-000") ==
+               {:ok,
+                %{
+                  city: "Arcos",
+                  complement: "",
+                  neighborhood: "Centro",
+                  state: "MG",
+                  street: "Avenida Magalhães Pinto",
+                  zipcode: "35588-000"
+                }}
     end
 
     test "returns an error with a reason" do

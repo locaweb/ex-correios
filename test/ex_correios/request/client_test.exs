@@ -1,5 +1,5 @@
 defmodule ExCorreios.Request.ClientTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   import ExCorreios.Factory
 

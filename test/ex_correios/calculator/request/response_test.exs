@@ -12,7 +12,7 @@ defmodule ExCorreios.Calculator.Request.ResponseTest do
       bypass = Bypass.open()
       calculator_url = "http://localhost:#{bypass.port}"
 
-      [bypass: bypass, calculator_url: calculator_url]
+      %{bypass: bypass, calculator_url: calculator_url}
     end
 
     test "returns a processed response", %{bypass: bypass, calculator_url: calculator_url} do
@@ -83,10 +83,9 @@ defmodule ExCorreios.Calculator.Request.ResponseTest do
     end
 
     test "returns request timeout error" do
-      expected_response = {:error, "req_timedout"}
       response = {:error, %HTTPoison.Error{reason: "req_timedout"}}
 
-      assert Response.process(response) == expected_response
+      assert Response.process(response) == {:error, "req_timedout"}
     end
   end
 end

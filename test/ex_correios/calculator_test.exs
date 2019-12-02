@@ -1,5 +1,5 @@
 defmodule ExCorreios.CalculatorTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   import ExCorreios.Factory
 
@@ -12,7 +12,7 @@ defmodule ExCorreios.CalculatorTest do
       bypass = Bypass.open()
       calculator_url = "http://localhost:#{bypass.port}"
 
-      [bypass: bypass, calculator_url: calculator_url]
+      %{bypass: bypass, calculator_url: calculator_url}
     end
 
     @tag :capture_log
@@ -63,7 +63,6 @@ defmodule ExCorreios.CalculatorTest do
                {:error, "Error fetching services."}
     end
 
-    @tag :capture_log
     test "returns a params error" do
       package = build(:package)
       params = %{destination: "05724005", origin: "08720030"}
