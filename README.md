@@ -30,6 +30,8 @@ config :ex_correios,
 
 ## Getting started
 
+### Calculate
+
 1 - Build one or more package items
 
 ```elixir
@@ -97,14 +99,14 @@ iex> package = ExCorreios.Calculator.Shipping.Package.build(:package_box, [dimen
 
 ```elixir
 iex> shipping_params = %{
-...>  destination: "05724005",
-...>  origin: "08720030",
-...>  enterprise: "",
-...>  password: "",
-...>  receiving_alert: false,
-...>  declared_value: 0,
-...>  manually_entered: false
-...> }
+  destination: "05724005",
+  origin: "08720030",
+  enterprise: "",
+  password: "",
+  receiving_alert: false,
+  declared_value: 0,
+  manually_entered: false
+}
 iex> ExCorreios.calculate([:pac], package, shipping_params)
 {:ok,
   [
@@ -224,6 +226,26 @@ Available options and their default values:
   timeout: 20_000 # timeout for receiving an HTTP response from the socket.
 ]
 ```
+
+### Find address
+
+1 - Find an address by a valid postal code
+
+iex> ExCorreios.find_address("35588-000")
+{:ok,
+  %{
+  city: "Arcos",
+  complement: "",
+  neighborhood: "",
+  state: "MG",
+  street: "",
+  zipcode: "35588000"
+  }}
+
+1.1 - Returns an error when postal code is invalid
+
+iex> ExCorreios.find_address("00000-000")
+{:error, %{reason: "CEP INVÁLIDO"}}
 
 ## Running tests
 
