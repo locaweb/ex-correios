@@ -45,7 +45,7 @@ defmodule ExCorreios.CalculatorTest do
                     response_status: "0",
                     saturday_delivery: "N",
                     service_code: "04510",
-                    service: :pac,
+                    name: "PAC",
                     value: 19.8,
                     value_without_additionals: 19.8
                   }
@@ -60,7 +60,7 @@ defmodule ExCorreios.CalculatorTest do
       Bypass.down(bypass)
 
       assert Calculator.calculate([:pac], package, params, calculator_url: calculator_url) ==
-               {:error, "Error to fetching services."}
+               {:error, "Error fetching services."}
     end
 
     @tag :capture_log

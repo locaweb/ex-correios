@@ -26,6 +26,8 @@ Add the following config to your config.exs file:
 ```elixir
 config :ex_correios,
   calculator_url: "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx"
+
+config :correios_cep, client: Correios.CEP.Client
 ```
 
 ## Getting started
@@ -113,16 +115,17 @@ iex> ExCorreios.calculate([:pac], package, shipping_params)
     %{
       deadline: 5,
       declared_value: 0.0,
+      error: nil,
       error_code: "0",
       error_message: "",
       home_delivery: "S",
       manually_entered_value: 0.0,
+      name: "PAC",
       notes: "",
       receiving_alert_value: 0.0,
       response_status: "0",
       saturday_delivery: "N",
       service_code: "04510",
-      service: :pac,
       value: 19.8,
       value_without_additionals: 19.8
     }
@@ -134,32 +137,34 @@ iex> ExCorreios.calculate([:pac, :sedex], package, shipping_params)
     %{
       deadline: 5,
       declared_value: 0.0,
+      error: nil,
       error_code: "0",
       error_message: "",
       home_delivery: "S",
       manually_entered_value: 0.0,
+      name: "PAC",
       notes: "",
       receiving_alert_value: 0.0,
       response_status: "0",
       saturday_delivery: "N",
       service_code: "04510",
-      service: :pac,
       value: 19.8,
       value_without_additionals: 19.8
     },
     %{
       deadline: 2,
       declared_value: 0.0,
+      error: nil,
       error_code: "0",
       error_message: "",
       home_delivery: "S",
       manually_entered_value: 0.0,
+      name: "SEDEX",
       notes: "",
       receiving_alert_value: 0.0,
       response_status: "0",
       saturday_delivery: "S",
       service_code: "04014",
-      service: :sedex,
       value: 21.2,
       value_without_additionals: 21.2
     }
@@ -176,32 +181,34 @@ iex> ExCorreios.calculate([:pac, :sedex_hoje], package, shipping_params)
    %{
      deadline: 5,
      declared_value: 0.0,
+     error: nil,
      error_code: "0",
      error_message: "",
      home_delivery: "S",
      manually_entered_value: 0.0,
+     name: "PAC",
      notes: "",
      receiving_alert_value: 0.0,
      response_status: "0",
      saturday_delivery: "N",
      service_code: "04510",
-     service: :pac,
      value: 19.8,
      value_without_additionals: 19.8
    },
    %{
      deadline: 0,
      declared_value: 0.0,
+     error: :invalid_destination_postal_code,
      error_code: "008",
      error_message: "Serviço indisponível para o trecho informado.",
      home_delivery: "",
      manually_entered_value: 0.0,
+     name: "SEDEX HOJE",
      notes: "",
      receiving_alert_value: 0.0,
      response_status: "008",
      saturday_delivery: "",
      service_code: "40290",
-     service: :sedex_hoje,
      value: 0.0,
      value_without_additionals: 0.0
    }
@@ -212,7 +219,7 @@ iex> ExCorreios.calculate([:pac, :sedex_hoje], package, shipping_params)
 
 ```elixir
 iex> ExCorreios.calculate([:pac, :sedex_hoje], package, shipping_params)
-{:error, "Error to fetching services."}
+{:error, "Error fetching services."}
 ```
 
 3.3 - Options

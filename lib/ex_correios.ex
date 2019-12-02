@@ -86,7 +86,7 @@ defmodule ExCorreios do
            neighborhood: "",
            state: "MG",
            street: "",
-           zipcode: "35588000"
+           zipcode: "35588-000"
          }}
 
       iex> ExCorreios.find_address("00000-000")
@@ -94,7 +94,7 @@ defmodule ExCorreios do
   """
   @spec find_address(String.t()) :: {:ok, address()} | {:error, %{reason: String.t()}}
   def find_address(postal_code) do
-    {status, address} = CEP.find_address(postal_code)
-    {status, Map.from_struct(address)}
+    {status, result} = CEP.find_address(postal_code)
+    {status, Map.from_struct(result)}
   end
 end

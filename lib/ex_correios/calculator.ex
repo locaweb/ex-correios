@@ -7,11 +7,12 @@ defmodule ExCorreios.Calculator do
   alias ExCorreios.Calculator.{Shipping, Shipping.Package}
   alias ExCorreios.Request.Client
 
+  @recv_timeout_default 10_000
   @timeout_default 10_000
 
   @doc "Calculates a shipping."
-  @spec calculate(list(atom), %Package{}, map(), list(Keyword.t())) ::
-          {:ok, list(map)} | {:error, atom()}
+  @spec calculate(list(atom), %Package{}, map(), keyword()) ::
+          {:ok, list(map())} | {:error, atom()}
   def calculate(services, package, params, opts \\ [])
   def calculate([], _package, _params, _opts), do: {:error, :empty_service_list}
 
@@ -26,11 +27,10 @@ defmodule ExCorreios.Calculator do
     results
     |> Enum.all?(&match?({:ok, _}, &1))
     |> Kernel.&&({:ok, format_results(results)})
-    |> Kernel.||({:error, "Error to fetching services."})
+    |> Kernel.||({:error, "Error fetching services."})
   end
 
-  defp format_results(results),
-    do: Enum.map(results, fn {:ok, result} -> result end)
+  defp format_results(results), do: Enum.map(results, fn {:ok, result} -> result end)
 
   defp calculate_service(service, package, params, opts) do
     calculator_url = Keyword.get(opts, :calculator_url)
@@ -44,13 +44,15 @@ defmodule ExCorreios.Calculator do
       |> Response.process()
 
     with {:ok, result} when is_map(result) <- request do
-      service = service |> to_string() |> String.upcase()
-      {:ok, Map.put(result, :name, service)}
+      {:ok, Map.put(result, :name, format_service_name(service))}
     end
   end
 
+  defp format_service_name(name),
+    do: name |> to_string() |> String.upcase() |> String.replace("_", " ")
+
   defp request_options(opts) do
-    recv_timeout = Keyword.get(opts, :recv_timeout, @timeout_default)
+    recv_timeout = Keyword.get(opts, :recv_timeout, @recv_timeout_default)
     timeout = Keyword.get(opts, :timeout, @timeout_default)
 
     [recv_timeout: recv_timeout, timeout: timeout]
