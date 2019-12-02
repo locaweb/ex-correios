@@ -1,5 +1,8 @@
 image: docker-registry.locaweb.com.br/stretch/elixir-dev:1.9
 
+variables:
+  MIX_ENV: test
+
 stages:
   - test
   - quality
@@ -7,32 +10,37 @@ stages:
 .deps: &deps
   before_script:
     - mix do local.hex --force, local.rebar --force
-    - mix hex.info
     - mix deps.get
 
 .cache: &cache
-  cache:
-    paths:
-      - deps
-      - _build
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - deps
+    - _build
 
 test:
   <<: *deps
-  <<: *cache
+  cache:
+    <<: *cache
+    policy: pull-push
   stage: test
   script:
     - mix test --trace --cover
 
 credo:
   <<: *deps
-  <<: *cache
+  cache:
+    <<: *cache
+    policy: pull
   stage: quality
   script:
     - mix credo --strict
 
 format:
   <<: *deps
-  <<: *cache
+  cache:
+    <<: *cache
+    policy: pull
   stage: quality
   script:
     - mix format --check-formatted
