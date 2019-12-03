@@ -10,13 +10,13 @@ defmodule ExCorreiosTest do
       bypass = Bypass.open()
       calculator_url = "http://localhost:#{bypass.port}"
 
-      %{calculator_url: calculator_url, bypass: bypass}
+      %{bypass: bypass, calculator_url: calculator_url}
     end
 
     @tag :capture_log
     test "returns shipping value calculated based on a service", %{
-      calculator_url: calculator_url,
-      bypass: bypass
+      bypass: bypass,
+      calculator_url: calculator_url
     } do
       expected_result =
         {:ok,
@@ -64,8 +64,8 @@ defmodule ExCorreiosTest do
 
     @tag :capture_log
     test "returns a request error", %{
-      calculator_url: calculator_url,
-      bypass: bypass
+      bypass: bypass,
+      calculator_url: calculator_url
     } do
       package = build(:package)
 

@@ -13,7 +13,7 @@ defmodule ExCorreios.Request.ClientTest do
       bypass = Bypass.open()
       calculator_url = "http://localhost:#{bypass.port}"
 
-      [bypass: bypass, calculator_url: calculator_url]
+      %{bypass: bypass, calculator_url: calculator_url}
     end
 
     @tag :capture_log
