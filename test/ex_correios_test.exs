@@ -113,7 +113,7 @@ defmodule ExCorreiosTest do
                   neighborhood: "Centro",
                   state: "MG",
                   street: "Avenida Magalhães Pinto",
-                  zipcode: "35588-000"
+                  postal_code: "35588-000"
                 }}
     end
 

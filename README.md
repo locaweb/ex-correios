@@ -246,7 +246,7 @@ iex> ExCorreios.find_address("35588-000")
   neighborhood: "",
   state: "MG",
   street: "",
-  zipcode: "35588000"
+  postal_code: "35588000"
   }}
 
 1.1 - Returns an error when postal code is invalid

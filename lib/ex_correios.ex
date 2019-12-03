@@ -11,9 +11,9 @@ defmodule ExCorreios do
            city: String.t(),
            complement: String.t(),
            neighborhood: String.t(),
+           postal_code: String.t(),
            state: String.t(),
-           street: String.t(),
-           zipcode: String.t()
+           street: String.t()
          }
 
   @doc """
@@ -84,17 +84,24 @@ defmodule ExCorreios do
            city: "Arcos",
            complement: "",
            neighborhood: "",
+           postal_code: "35588-000",
            state: "MG",
-           street: "",
-           zipcode: "35588-000"
+           street: ""
          }}
 
       iex> ExCorreios.find_address("00000-000")
       {:error, %{reason: "CEP INVÁLIDO"}}
   """
   @spec find_address(String.t()) :: {:ok, address()} | {:error, %{reason: String.t()}}
-  def find_address(postal_code) do
-    {status, result} = CEP.find_address(postal_code)
-    {status, Map.from_struct(result)}
+  def find_address(postal_code), do: postal_code |> CEP.find_address() |> format_address()
+
+  defp format_address({:error, %{reason: reason}}), do: {:error, %{reason: reason}}
+
+  defp format_address({:ok, address}) do
+    {:ok,
+     address
+     |> Map.from_struct()
+     |> Map.delete(:zipcode)
+     |> Map.put(:postal_code, address.zipcode)}
   end
 end
