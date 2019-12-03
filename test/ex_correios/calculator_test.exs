@@ -16,7 +16,7 @@ defmodule ExCorreios.CalculatorTest do
     end
 
     @tag :capture_log
-    test "returns shipping value calculated based in a service", %{
+    test "returns shipping value calculated based on a service", %{
       bypass: bypass,
       calculator_url: calculator_url
     } do
