@@ -3,12 +3,18 @@ defmodule ExCorreios do
   This module provides a function to calculate shipping based on one or more services.
   """
 
-  @recv_timeout_default 20_000
-  @timeout_default 20_000
+  alias Correios.CEP
+  alias ExCorreios.Calculator
+  alias ExCorreios.Calculator.Shipping.Package
 
-  alias ExCorreios.Request.{Client, Url}
-  alias ExCorreios.Shipping.Packages.Package
-  alias ExCorreios.Shipping.Shipping
+  @typep address :: %{
+           city: String.t(),
+           complement: String.t(),
+           neighborhood: String.t(),
+           postal_code: String.t(),
+           state: String.t(),
+           street: String.t()
+         }
 
   @doc """
   Calculate shipping based on one or more services.
@@ -18,14 +24,14 @@ defmodule ExCorreios do
       iex> dimensions = [%{diameter: 40, width: 11.0, height: 2.0, length: 16.0, weight: 0.9}]
       iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, dimensions)
       iex> shipping_params = %{
-      ...>  destination: "05724005",
-      ...>  origin: "08720030",
-      ...>  enterprise: "",
-      ...>  password: "",
-      ...>  receiving_alert: false,
-      ...>  declared_value: 0,
-      ...>  manually_entered: false
-      ...> }
+        destination: "05724005",
+        origin: "08720030",
+        enterprise: "",
+        password: "",
+        receiving_alert: false,
+        declared_value: 0,
+        manually_entered: false
+      }
       iex> ExCorreios.calculate([:pac, :sedex], package, shipping_params)
       {:ok,
         [
@@ -64,23 +70,38 @@ defmodule ExCorreios do
   """
   @spec calculate(list(atom), %Package{}, map(), list(Keyword.t())) ::
           {:ok, list(map)} | {:error, atom()}
-  def calculate(services, package, params, opts \\ [])
-  def calculate([], _package, _params, _opts), do: {:error, :empty_service_list}
+  defdelegate calculate(services, package, params), to: Calculator
+  defdelegate calculate(services, package, params, opts), to: Calculator
 
-  def calculate(services, package, params, opts) do
-    base_url = Keyword.get(opts, :base_url)
-    request_options = request_options(opts)
+  @doc """
+  Finds an address by a postal code.
 
-    services
-    |> Shipping.new(package, params)
-    |> Url.build(base_url)
-    |> Client.get(request_options)
-  end
+  ## Examples
 
-  defp request_options(opts) do
-    recv_timeout = Keyword.get(opts, :recv_timeout, @recv_timeout_default)
-    timeout = Keyword.get(opts, :timeout, @timeout_default)
+      iex> ExCorreios.find_address("35588-000")
+      {:ok,
+         %{
+           city: "Arcos",
+           complement: "",
+           neighborhood: "",
+           postal_code: "35588-000",
+           state: "MG",
+           street: ""
+         }}
 
-    [recv_timeout: recv_timeout, timeout: timeout]
+      iex> ExCorreios.find_address("00000-000")
+      {:error, %{reason: "CEP INVÁLIDO"}}
+  """
+  @spec find_address(String.t()) :: {:ok, address()} | {:error, %{reason: String.t()}}
+  def find_address(postal_code), do: postal_code |> CEP.find_address() |> format_address()
+
+  defp format_address({:error, %{reason: reason}}), do: {:error, %{reason: reason}}
+
+  defp format_address({:ok, address}) do
+    {:ok,
+     address
+     |> Map.from_struct()
+     |> Map.delete(:zipcode)
+     |> Map.put(:postal_code, address.zipcode)}
   end
 end

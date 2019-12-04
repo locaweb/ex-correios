@@ -1,6 +1,11 @@
 # ExCorreios
 
-Elixir client that integrates with Correios API. It calculates price and deadline shipping.
+Elixir client that integrates with Correios API.
+
+## Features:
+
+- Calculate shipping price and deadline;
+- Search an address by postal code.
 
 ## Installation
 
@@ -20,10 +25,14 @@ Add the following config to your config.exs file:
 
 ```elixir
 config :ex_correios,
-  base_url: "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx"
+  calculator_url: "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx"
+
+config :correios_cep, client: Correios.CEP.Client
 ```
 
 ## Getting started
+
+### Calculate
 
 1 - Build one or more package items
 
@@ -35,8 +44,8 @@ iex> dimensions2 = %{diameter: 0.0, height: 0.0, length: 0.0, weight: 0.0, width
 2 - Build a package with an item to calculate shipping
 
 ```elixir
-iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, [dimensions])
-%ExCorreios.Shipping.Packages.Package{
+iex> package = ExCorreios.Calculator.Shipping.Package.build(:package_box, [dimensions])
+%ExCorreios.Calculator.Shipping.Package{
   diameter: 40.0,
   format: 1,
   height: 2.0,
@@ -49,8 +58,8 @@ iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, [dimensi
 2.1 - When the package dimensions is smaller than the min dimensions accepted, we'll use the min dimensions defined by the correios
 
 ```elixir
-iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, [dimensions2])
-%ExCorreios.Shipping.Packages.Package{
+iex> package = ExCorreios.Calculator.Shipping.Package.build(:package_box, [dimensions2])
+%ExCorreios.Calculator.Shipping.Package{
   diameter: 0.0,
   format: 1,
   height: 2.0,
@@ -63,8 +72,8 @@ iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, [dimensi
 2.2 - It's possible to pass only the weight to build a package
 
 ```elixir
-iex> ExCorreios.Shipping.Packages.Package.build(:package_box, [%{weight: 0.3}])
-%ExCorreios.Shipping.Packages.Package{
+iex> ExCorreios.Calculator.Shipping.Package.build(:package_box, [%{weight: 0.3}])
+%ExCorreios.Calculator.Shipping.Package{
   diameter: 0.0,
   format: 1,
   height: 2.0,
@@ -77,8 +86,8 @@ iex> ExCorreios.Shipping.Packages.Package.build(:package_box, [%{weight: 0.3}])
 2.3 - Build a package with one or more items to calculate shipping
 
 ```elixir
-iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, [dimensions, dimensions2])
-%ExCorreios.Shipping.Packages.Package{
+iex> package = ExCorreios.Calculator.Shipping.Package.build(:package_box, [dimensions, dimensions2])
+%ExCorreios.Calculator.Shipping.Package{
   diameter: 40.0,
   format: 1,
   height: 7.06,
@@ -92,24 +101,26 @@ iex> package = ExCorreios.Shipping.Packages.Package.build(:package_box, [dimensi
 
 ```elixir
 iex> shipping_params = %{
-...>  destination: "05724005",
-...>  origin: "08720030",
-...>  enterprise: "",
-...>  password: "",
-...>  receiving_alert: false,
-...>  declared_value: 0,
-...>  manually_entered: false
-...> }
+  destination: "05724005",
+  origin: "08720030",
+  enterprise: "",
+  password: "",
+  receiving_alert: false,
+  declared_value: 0,
+  manually_entered: false
+}
 iex> ExCorreios.calculate([:pac], package, shipping_params)
 {:ok,
   [
     %{
       deadline: 5,
       declared_value: 0.0,
+      error: nil,
       error_code: "0",
       error_message: "",
       home_delivery: "S",
       manually_entered_value: 0.0,
+      name: "PAC",
       notes: "",
       receiving_alert_value: 0.0,
       response_status: "0",
@@ -126,10 +137,12 @@ iex> ExCorreios.calculate([:pac, :sedex], package, shipping_params)
     %{
       deadline: 5,
       declared_value: 0.0,
+      error: nil,
       error_code: "0",
       error_message: "",
       home_delivery: "S",
       manually_entered_value: 0.0,
+      name: "PAC",
       notes: "",
       receiving_alert_value: 0.0,
       response_status: "0",
@@ -141,10 +154,12 @@ iex> ExCorreios.calculate([:pac, :sedex], package, shipping_params)
     %{
       deadline: 2,
       declared_value: 0.0,
+      error: nil,
       error_code: "0",
       error_message: "",
       home_delivery: "S",
       manually_entered_value: 0.0,
+      name: "SEDEX",
       notes: "",
       receiving_alert_value: 0.0,
       response_status: "0",
@@ -166,10 +181,12 @@ iex> ExCorreios.calculate([:pac, :sedex_hoje], package, shipping_params)
    %{
      deadline: 5,
      declared_value: 0.0,
+     error: nil,
      error_code: "0",
      error_message: "",
      home_delivery: "S",
      manually_entered_value: 0.0,
+     name: "PAC",
      notes: "",
      receiving_alert_value: 0.0,
      response_status: "0",
@@ -181,10 +198,12 @@ iex> ExCorreios.calculate([:pac, :sedex_hoje], package, shipping_params)
    %{
      deadline: 0,
      declared_value: 0.0,
+     error: :invalid_destination_postal_code,
      error_code: "008",
      error_message: "Serviço indisponível para o trecho informado.",
      home_delivery: "",
      manually_entered_value: 0.0,
+     name: "SEDEX HOJE",
      notes: "",
      receiving_alert_value: 0.0,
      response_status: "008",
@@ -200,7 +219,7 @@ iex> ExCorreios.calculate([:pac, :sedex_hoje], package, shipping_params)
 
 ```elixir
 iex> ExCorreios.calculate([:pac, :sedex_hoje], package, shipping_params)
-{:error, :timeout}
+{:error, "Error fetching services."}
 ```
 
 3.3 - Options
@@ -209,11 +228,31 @@ Available options and their default values:
 
 ```elixir
 [
-  base_url: "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx", # defined in the project config.
+  calculator_url: "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx", # defined in the project config.
   recv_timeout: 20_000, # timeout for establishing a TCP or SSL connection, in milliseconds.
   timeout: 20_000 # timeout for receiving an HTTP response from the socket.
 ]
 ```
+
+### Find address
+
+1 - Find an address by a valid postal code
+
+iex> ExCorreios.find_address("35588-000")
+{:ok,
+  %{
+  city: "Arcos",
+  complement: "",
+  neighborhood: "",
+  state: "MG",
+  street: "",
+  postal_code: "35588000"
+  }}
+
+1.1 - Returns an error when postal code is invalid
+
+iex> ExCorreios.find_address("00000-000")
+{:error, %{reason: "CEP INVÁLIDO"}}
 
 ## Running tests
 

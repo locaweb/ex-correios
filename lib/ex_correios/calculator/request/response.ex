@@ -1,4 +1,4 @@
-defmodule ExCorreios.Request.Response do
+defmodule ExCorreios.Calculator.Request.Response do
   @moduledoc """
   This module transforms a xml body of an http response into a map or a list of maps.
   """
@@ -13,13 +13,17 @@ defmodule ExCorreios.Request.Response do
   @spec process({:error, %HTTPoison.Error{}}) :: {:error, String.t()}
   def process({:error, %HTTPoison.Error{reason: reason}}), do: {:error, reason}
 
-  defp parser(body),
-    do: xpath(body, %SweetXpath{path: @root_path, is_list: true}, shipping_path())
+  defp parser(body) do
+    body
+    |> xpath(%SweetXpath{path: @root_path, is_list: true}, shipping_path())
+    |> List.first()
+  end
 
   defp shipping_path do
     [
       deadline: ~x"//PrazoEntrega/text()"i,
       declared_value: transform_by(~x"//ValorValorDeclarado/text()"s, &to_float/1),
+      error: transform_by(~x"//Erro/text()"s, &parse_error_code/1),
       error_code: ~x"//Erro/text()"s,
       error_message: ~x"//MsgErro/text()"s,
       home_delivery: ~x"//EntregaDomiciliar/text()"s,
@@ -33,6 +37,12 @@ defmodule ExCorreios.Request.Response do
       value_without_additionals: transform_by(~x"//ValorSemAdicionais/text()"s, &to_float/1)
     ]
   end
+
+  defp parse_error_code("0"), do: nil
+  defp parse_error_code("-2"), do: :invalid_origin_postal_code
+  defp parse_error_code("-3"), do: :invalid_destination_postal_code
+  defp parse_error_code(error_code) when error_code in ["-4", "-888"], do: :exceeded_weight
+  defp parse_error_code(_), do: :unexpected_error
 
   defp to_float(string) do
     string

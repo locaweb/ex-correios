@@ -1,4 +1,4 @@
-defmodule ExCorreios.Shipping.Packages.Package do
+defmodule ExCorreios.Calculator.Shipping.Package do
   @moduledoc """
   This module provides a package struct
   """

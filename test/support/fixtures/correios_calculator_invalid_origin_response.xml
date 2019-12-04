@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<Servicos>
+  <cServico>
+    <Codigo>04510</Codigo>
+    <Valor>0,00</Valor>
+    <PrazoEntrega>0</PrazoEntrega>
+    <ValorSemAdicionais>0,00</ValorSemAdicionais>
+    <ValorMaoPropria>0,00</ValorMaoPropria>
+    <ValorAvisoRecebimento>0,00</ValorAvisoRecebimento>
+    <ValorValorDeclarado>0,00</ValorValorDeclarado>
+    <EntregaDomiciliar/>
+    <EntregaSabado/>
+    <obsFim/>
+    <Erro>-2</Erro>
+    <MsgErro>
+      <![CDATA[ CEP de origem invalido. ]]>
+    </MsgErro>
+  </cServico>
+</Servicos>

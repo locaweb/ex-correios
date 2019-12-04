@@ -1,21 +1,22 @@
 defmodule ExCorreiosTest do
-  use ExUnit.Case
-
-  @fixture_path "test/support/fixtures"
+  use ExUnit.Case, async: true
 
   import ExCorreios.Factory
+
+  @fixture_path "test/support/fixtures"
 
   describe "ExCorreios.calculate/4" do
     setup do
       bypass = Bypass.open()
-      base_url = "http://localhost:#{bypass.port}"
+      calculator_url = "http://localhost:#{bypass.port}"
 
-      [base_url: base_url, bypass: bypass]
+      %{bypass: bypass, calculator_url: calculator_url}
     end
 
-    test "returns shipping value calculated based in a service", %{
-      base_url: base_url,
-      bypass: bypass
+    @tag :capture_log
+    test "returns shipping value calculated based on a service", %{
+      bypass: bypass,
+      calculator_url: calculator_url
     } do
       expected_result =
         {:ok,
@@ -23,6 +24,7 @@ defmodule ExCorreiosTest do
            %{
              deadline: 5,
              declared_value: 0.0,
+             error: nil,
              error_code: "0",
              error_message: "",
              home_delivery: "S",
@@ -32,6 +34,7 @@ defmodule ExCorreiosTest do
              response_status: "0",
              saturday_delivery: "N",
              service_code: "04510",
+             name: "PAC",
              value: 19.8,
              value_without_additionals: 19.8
            }
@@ -50,17 +53,19 @@ defmodule ExCorreiosTest do
       }
 
       Bypass.expect(bypass, fn conn ->
-        correios_response = File.read!("#{@fixture_path}/correios_response.xml")
+        correios_response = File.read!("#{@fixture_path}/correios_calculator_response.xml")
 
         Plug.Conn.send_resp(conn, 200, correios_response)
       end)
 
-      assert ExCorreios.calculate([:pac], package, params, base_url: base_url) == expected_result
+      assert ExCorreios.calculate([:pac], package, params, calculator_url: calculator_url) ==
+               expected_result
     end
 
+    @tag :capture_log
     test "returns a request error", %{
-      base_url: base_url,
-      bypass: bypass
+      bypass: bypass,
+      calculator_url: calculator_url
     } do
       package = build(:package)
 
@@ -76,10 +81,11 @@ defmodule ExCorreiosTest do
 
       Bypass.down(bypass)
 
-      assert ExCorreios.calculate([:pac], package, params, base_url: base_url) ==
-               {:error, :econnrefused}
+      assert ExCorreios.calculate([:pac], package, params, calculator_url: calculator_url) ==
+               {:error, "Error fetching services."}
     end
 
+    @tag :capture_log
     test "returns a params error" do
       package = build(:package)
 
@@ -94,6 +100,25 @@ defmodule ExCorreiosTest do
       }
 
       assert ExCorreios.calculate([], package, params) == {:error, :empty_service_list}
+    end
+  end
+
+  describe "ExCorreios.find_address/1" do
+    test "returns an address by a valid postal code" do
+      assert ExCorreios.find_address("35588-000") ==
+               {:ok,
+                %{
+                  city: "Arcos",
+                  complement: "",
+                  neighborhood: "Centro",
+                  state: "MG",
+                  street: "Avenida Magalhães Pinto",
+                  postal_code: "35588-000"
+                }}
+    end
+
+    test "returns an error with a reason" do
+      assert {:error, %{reason: "CEP NAO ENCONTRADO"}} = ExCorreios.find_address("00000-000")
     end
   end
 end
