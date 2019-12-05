@@ -33,7 +33,7 @@ defmodule ExCorreios.Calculator do
   defp format_results(results), do: Enum.map(results, fn {:ok, result} -> result end)
 
   defp calculate_service(service, package, params, opts) do
-    calculator_url = Keyword.get(opts, :calculator_url)
+    calculator_url = opts[:calculator_url]
     request_options = request_options(opts)
 
     request =
@@ -52,8 +52,8 @@ defmodule ExCorreios.Calculator do
     do: name |> to_string() |> String.upcase() |> String.replace("_", " ")
 
   defp request_options(opts) do
-    recv_timeout = Keyword.get(opts, :recv_timeout, @recv_timeout_default)
-    timeout = Keyword.get(opts, :timeout, @timeout_default)
+    recv_timeout = opts[:recv_timeout] || @recv_timeout_default
+    timeout = opts[:timeout] || @timeout_default
 
     [recv_timeout: recv_timeout, timeout: timeout]
   end

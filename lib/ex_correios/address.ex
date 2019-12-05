@@ -1,0 +1,31 @@
+defmodule ExCorreios.Address do
+  @moduledoc "This module provides functions to get an address."
+
+  alias ExCorreios.Address.Request.{Body, Response}
+  alias ExCorreios.Request.Client
+
+  @enforce_keys [:city, :complement, :neighborhood, :postal_code, :state, :street]
+  defstruct @enforce_keys
+
+  @type t :: %__MODULE__{
+          city: String.t(),
+          complement: String.t(),
+          neighborhood: String.t(),
+          postal_code: String.t(),
+          state: String.t(),
+          street: String.t()
+        }
+
+  @spec find(String.t(), keyword()) :: {:ok, __MODULE__.t()} | {:error, String.t()}
+  def find(postal_code, opts \\ []) do
+    body = Body.build(postal_code)
+
+    opts
+    |> address_url()
+    |> Client.post(body)
+    |> Response.process()
+  end
+
+  defp address_url(opts),
+    do: opts[:address_url] || Application.get_env(:ex_correios, :address_url)
+end

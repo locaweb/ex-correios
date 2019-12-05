@@ -3,18 +3,8 @@ defmodule ExCorreios do
   This module provides a function to calculate shipping based on one or more services.
   """
 
-  alias Correios.CEP
-  alias ExCorreios.Calculator
+  alias ExCorreios.{Address, Calculator}
   alias ExCorreios.Calculator.Shipping.Package
-
-  @typep address :: %{
-           city: String.t(),
-           complement: String.t(),
-           neighborhood: String.t(),
-           postal_code: String.t(),
-           state: String.t(),
-           street: String.t()
-         }
 
   @doc """
   Calculate shipping based on one or more services.
@@ -90,18 +80,8 @@ defmodule ExCorreios do
          }}
 
       iex> ExCorreios.find_address("00000-000")
-      {:error, %{reason: "CEP INVÁLIDO"}}
+      {:error, :invalid_postal_code}
   """
-  @spec find_address(String.t()) :: {:ok, address()} | {:error, %{reason: String.t()}}
-  def find_address(postal_code), do: postal_code |> CEP.find_address() |> format_address()
-
-  defp format_address({:error, %{reason: reason}}), do: {:error, %{reason: reason}}
-
-  defp format_address({:ok, address}) do
-    {:ok,
-     address
-     |> Map.from_struct()
-     |> Map.delete(:zipcode)
-     |> Map.put(:postal_code, address.zipcode)}
-  end
+  @spec find_address(String.t()) :: {:ok, Address.t()} | {:error, atom()}
+  def find_address(postal_code), do: Address.find(postal_code)
 end

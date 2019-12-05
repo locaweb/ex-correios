@@ -102,23 +102,4 @@ defmodule ExCorreiosTest do
       assert ExCorreios.calculate([], package, params) == {:error, :empty_service_list}
     end
   end
-
-  describe "ExCorreios.find_address/1" do
-    test "returns an address by a valid postal code" do
-      assert ExCorreios.find_address("35588-000") ==
-               {:ok,
-                %{
-                  city: "Arcos",
-                  complement: "",
-                  neighborhood: "Centro",
-                  state: "MG",
-                  street: "Avenida Magalhães Pinto",
-                  postal_code: "35588-000"
-                }}
-    end
-
-    test "returns an error with a reason" do
-      assert {:error, %{reason: "CEP NAO ENCONTRADO"}} = ExCorreios.find_address("00000-000")
-    end
-  end
 end
