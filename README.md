@@ -243,10 +243,10 @@ iex> ExCorreios.find_address("35588-000")
   %{
   city: "Arcos",
   complement: "",
-  neighborhood: "",
+  district: "",
+  postal_code: "35588000",
   state: "MG",
-  street: "",
-  postal_code: "35588000"
+  street: ""
   }}
 
 1.1 - Returns an error when postal code is invalid

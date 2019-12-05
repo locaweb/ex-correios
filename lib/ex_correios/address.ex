@@ -4,13 +4,13 @@ defmodule ExCorreios.Address do
   alias ExCorreios.Address.Request.{Body, Response}
   alias ExCorreios.Request.Client
 
-  @enforce_keys [:city, :complement, :neighborhood, :postal_code, :state, :street]
+  @enforce_keys [:city, :complement, :district, :postal_code, :state, :street]
   defstruct @enforce_keys
 
   @type t :: %__MODULE__{
           city: String.t(),
           complement: String.t(),
-          neighborhood: String.t(),
+          district: String.t(),
           postal_code: String.t(),
           state: String.t(),
           street: String.t()

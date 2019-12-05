@@ -15,7 +15,7 @@ defmodule ExCorreios.Address.Request.ResponseTest do
                 %{
                   city: "Lavras",
                   complement: "",
-                  neighborhood: "Centro",
+                  district: "Centro",
                   postal_code: "37200001",
                   state: "MG",
                   street: "Rua Gustavo Pena"

@@ -20,7 +20,7 @@ defmodule ExCorreios.Address.Request.Response do
     [
       city: ~x"//cidade/text()"s,
       complement: ~x"//complemento2/text()"s,
-      neighborhood: ~x"//bairro/text()"s,
+      district: ~x"//bairro/text()"s,
       postal_code: ~x"//cep/text()"s,
       state: ~x"//uf/text()"s,
       street: ~x"//end/text()"s

@@ -73,7 +73,7 @@ defmodule ExCorreios do
          %{
            city: "Arcos",
            complement: "",
-           neighborhood: "",
+           district: "",
            postal_code: "35588-000",
            state: "MG",
            street: ""
