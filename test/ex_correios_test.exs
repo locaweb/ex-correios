@@ -3,20 +3,22 @@ defmodule ExCorreiosTest do
 
   import ExCorreios.Factory
 
+  alias ExCorreios.Address
+
   @fixtures_path "test/support/fixtures/correios"
 
+  setup do
+    bypass = Bypass.open()
+    base_url = "http://localhost:#{bypass.port}"
+
+    %{base_url: base_url, bypass: bypass}
+  end
+
   describe "ExCorreios.calculate/4" do
-    setup do
-      bypass = Bypass.open()
-      calculator_url = "http://localhost:#{bypass.port}"
-
-      %{bypass: bypass, calculator_url: calculator_url}
-    end
-
     @tag :capture_log
     test "returns shipping value calculated based on a service", %{
-      bypass: bypass,
-      calculator_url: calculator_url
+      base_url: base_url,
+      bypass: bypass
     } do
       expected_result =
         {:ok,
@@ -58,14 +60,14 @@ defmodule ExCorreiosTest do
         Plug.Conn.send_resp(conn, 200, correios_response)
       end)
 
-      assert ExCorreios.calculate([:pac], package, params, calculator_url: calculator_url) ==
+      assert ExCorreios.calculate([:pac], package, params, calculator_url: base_url) ==
                expected_result
     end
 
     @tag :capture_log
     test "returns a request error", %{
-      bypass: bypass,
-      calculator_url: calculator_url
+      base_url: base_url,
+      bypass: bypass
     } do
       package = build(:package)
 
@@ -81,7 +83,7 @@ defmodule ExCorreiosTest do
 
       Bypass.down(bypass)
 
-      assert ExCorreios.calculate([:pac], package, params, calculator_url: calculator_url) ==
+      assert ExCorreios.calculate([:pac], package, params, calculator_url: base_url) ==
                {:error, "Error fetching services."}
     end
 
@@ -100,6 +102,38 @@ defmodule ExCorreiosTest do
       }
 
       assert ExCorreios.calculate([], package, params) == {:error, :empty_service_list}
+    end
+  end
+
+  describe "ExCorreios.find_address/2" do
+    test "returns an address by a valid postal code", %{base_url: base_url, bypass: bypass} do
+      Bypass.expect(bypass, fn conn ->
+        response = File.read!("#{@fixtures_path}/address/success_response.xml")
+
+        Plug.Conn.send_resp(conn, 200, response)
+      end)
+
+      assert ExCorreios.find_address("37200-001", address_url: base_url) ==
+               {:ok,
+                %Address{
+                  city: "Lavras",
+                  complement: "",
+                  neighborhood: "Centro",
+                  postal_code: "37200001",
+                  state: "MG",
+                  street: "Rua Gustavo Pena"
+                }}
+    end
+
+    test "returns an error with a reason", %{base_url: base_url, bypass: bypass} do
+      Bypass.expect(bypass, fn conn ->
+        response = File.read!("#{@fixtures_path}/address/not_found_response.xml")
+
+        Plug.Conn.send_resp(conn, 500, response)
+      end)
+
+      assert ExCorreios.find_address("00000-321", address_url: base_url) ==
+               {:error, :postal_code_not_found}
     end
   end
 end

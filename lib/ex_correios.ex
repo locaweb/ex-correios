@@ -82,6 +82,6 @@ defmodule ExCorreios do
       iex> ExCorreios.find_address("00000-000")
       {:error, :invalid_postal_code}
   """
-  @spec find_address(String.t()) :: {:ok, Address.t()} | {:error, atom()}
-  def find_address(postal_code), do: Address.find(postal_code)
+  @spec find_address(String.t(), keyword()) :: {:ok, Address.t()} | {:error, atom()}
+  def find_address(postal_code, opts \\ []), do: Address.find(postal_code, opts)
 end
