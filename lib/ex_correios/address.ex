@@ -4,6 +4,8 @@ defmodule ExCorreios.Address do
   alias ExCorreios.Address.Request.{Body, Response}
   alias ExCorreios.Request.Client
 
+  require Logger
+
   @enforce_keys [:city, :complement, :district, :postal_code, :state, :street]
   defstruct @enforce_keys
 
@@ -23,6 +25,10 @@ defmodule ExCorreios.Address do
     |> Client.post(Body.build(postal_code), opts)
     |> Response.process()
     |> build_address()
+  rescue
+    exception ->
+      Logger.error("Error finding an address #{postal_code}: #{inspect(exception)}")
+      {:error, :unexpected_error}
   end
 
   defp build_address({:ok, attrs}), do: {:ok, struct(__MODULE__, attrs)}

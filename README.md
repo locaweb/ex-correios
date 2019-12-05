@@ -26,7 +26,8 @@ Add the following config to your config.exs file:
 ```elixir
 config :ex_correios,
   address_url: "https://apps.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente",
-  calculator_url: "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx"
+  calculator_url: "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx",
+  proxy: {"proxyhost.com", 8866}
 ```
 
 ## Getting started
@@ -228,7 +229,6 @@ Available options:
 ```elixir
 [
   calculator_url: "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx", # defined in the project config.
-  proxy: {"proxy.com", 12345}, # proxy to access the resource.
   recv_timeout: 10_000, # timeout for establishing a TCP or SSL connection, in milliseconds.
   timeout: 10_000 # timeout for receiving an HTTP response from the socket.
 ]
@@ -259,7 +259,6 @@ iex> ExCorreios.find_address("00000-000")
 ```elixir
 [
   address_url: "https://apps.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente", # defined in the project config.
-  proxy: {"proxy.com", 12345}, # proxy to access the resource.
   recv_timeout: 10_000, # timeout for establishing a TCP or SSL connection, in milliseconds.
   timeout: 10_000 # timeout for receiving an HTTP response from the socket.
 ]

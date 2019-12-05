@@ -27,5 +27,15 @@ defmodule ExCorreios.Request.Client do
     url
   end
 
-  defp allowed_opts(opts), do: Keyword.take(opts, [:proxy, :recv_timeout, :timeout])
+  defp allowed_opts(opts) do
+    opts = Keyword.take(opts, [:recv_timeout, :timeout])
+
+    case Application.get_env(:ex_correios, :proxy) do
+      {host, port} = proxy when is_binary(host) and is_integer(port) ->
+        Keyword.put(opts, :proxy, proxy)
+
+      _ ->
+        opts
+    end
+  end
 end
