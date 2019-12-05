@@ -27,7 +27,7 @@ Add the following config to your config.exs file:
 config :ex_correios,
   address_url: "https://apps.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente",
   calculator_url: "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx",
-  proxy: {"proxyhost.com", 8866}
+  proxy: {"proxyhost.com", "8866"}
 ```
 
 ## Getting started

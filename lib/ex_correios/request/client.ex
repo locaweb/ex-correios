@@ -18,7 +18,7 @@ defmodule ExCorreios.Request.Client do
   def post(url, body, opts \\ []) do
     url
     |> log_request()
-    |> HTTPoison.post(body, allowed_opts(opts))
+    |> HTTPoison.post(body, [{"Content-Type", "text/xml; charset=utf-8"}], allowed_opts(opts))
   end
 
   defp log_request(url) do
@@ -31,8 +31,8 @@ defmodule ExCorreios.Request.Client do
     opts = Keyword.take(opts, [:recv_timeout, :timeout])
 
     case Application.get_env(:ex_correios, :proxy) do
-      {host, port} = proxy when is_binary(host) and is_integer(port) ->
-        Keyword.put(opts, :proxy, proxy)
+      {host, port} when is_binary(host) and is_binary(port) ->
+        Keyword.put(opts, :proxy, {host, String.to_integer(port)})
 
       _ ->
         opts
