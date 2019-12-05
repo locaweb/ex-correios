@@ -106,6 +106,7 @@ defmodule ExCorreiosTest do
   end
 
   describe "ExCorreios.find_address/2" do
+    @tag :capture_log
     test "returns an address by a valid postal code", %{base_url: base_url, bypass: bypass} do
       Bypass.expect(bypass, fn conn ->
         response = File.read!("#{@fixtures_path}/address/success_response.xml")
@@ -125,6 +126,7 @@ defmodule ExCorreiosTest do
                 }}
     end
 
+    @tag :capture_log
     test "returns an error with a reason", %{base_url: base_url, bypass: bypass} do
       Bypass.expect(bypass, fn conn ->
         response = File.read!("#{@fixtures_path}/address/not_found_response.xml")

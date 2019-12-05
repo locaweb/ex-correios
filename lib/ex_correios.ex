@@ -60,8 +60,7 @@ defmodule ExCorreios do
   """
   @spec calculate(list(atom), %Package{}, map(), list(Keyword.t())) ::
           {:ok, list(map)} | {:error, atom()}
-  defdelegate calculate(services, package, params), to: Calculator
-  defdelegate calculate(services, package, params, opts), to: Calculator
+  defdelegate calculate(services, package, params, opts \\ []), to: Calculator
 
   @doc """
   Finds an address by a postal code.
@@ -83,5 +82,5 @@ defmodule ExCorreios do
       {:error, :invalid_postal_code}
   """
   @spec find_address(String.t(), keyword()) :: {:ok, Address.t()} | {:error, atom()}
-  def find_address(postal_code, opts \\ []), do: Address.find(postal_code, opts)
+  defdelegate find_address(postal_code, opts \\ []), to: Address, as: :find
 end
