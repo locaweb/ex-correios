@@ -3,7 +3,7 @@ defmodule ExCorreiosTest do
 
   import ExCorreios.Factory
 
-  @fixture_path "test/support/fixtures"
+  @fixtures_path "test/support/fixtures/correios"
 
   describe "ExCorreios.calculate/4" do
     setup do
@@ -53,7 +53,7 @@ defmodule ExCorreiosTest do
       }
 
       Bypass.expect(bypass, fn conn ->
-        correios_response = File.read!("#{@fixture_path}/correios_calculator_response.xml")
+        correios_response = File.read!("#{@fixtures_path}/calculator/success_response.xml")
 
         Plug.Conn.send_resp(conn, 200, correios_response)
       end)

@@ -3,7 +3,7 @@ defmodule ExCorreios.Request.ClientTest do
 
   import ExCorreios.Factory
 
-  @fixture_path "test/support/fixtures"
+  @fixtures_path "test/support/fixtures/correios"
 
   alias ExCorreios.Calculator.Request.Url
   alias ExCorreios.Request.Client
@@ -18,7 +18,7 @@ defmodule ExCorreios.Request.ClientTest do
 
     @tag :capture_log
     test "returns a success request result", %{bypass: bypass, calculator_url: calculator_url} do
-      correios_response = File.read!("#{@fixture_path}/correios_calculator_response.xml")
+      correios_response = File.read!("#{@fixtures_path}/calculator/success_response.xml")
       package = build(:package)
 
       url =
