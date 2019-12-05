@@ -18,13 +18,15 @@ defmodule ExCorreios.Address do
 
   @spec find(String.t(), keyword()) :: {:ok, __MODULE__.t()} | {:error, String.t()}
   def find(postal_code, opts \\ []) do
-    body = Body.build(postal_code)
-
     opts
     |> address_url()
-    |> Client.post(body)
+    |> Client.post(Body.build(postal_code))
     |> Response.process()
+    |> build_address()
   end
+
+  defp build_address({:ok, attrs}), do: {:ok, struct(__MODULE__, attrs)}
+  defp build_address(response), do: response
 
   defp address_url(opts),
     do: opts[:address_url] || Application.get_env(:ex_correios, :address_url)

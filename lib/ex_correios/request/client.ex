@@ -5,17 +5,20 @@ defmodule ExCorreios.Request.Client do
 
   require Logger
 
-  @spec get(String.t()) :: {:ok, list(struct)} | {:error, String.t()}
+  alias HTTPoison.{Error, Response}
+
+  @spec get(String.t(), keyword()) :: {:ok, Response.t()} | {:error, Error.t()}
   def get(url, opts \\ []) do
     url
     |> log_request()
     |> HTTPoison.get([], opts)
   end
 
+  @spec post(String.t(), String.t(), keyword()) :: {:ok, Response.t()} | {:error, Error.t()}
   def post(url, body, opts \\ []) do
     url
     |> log_request()
-    |> HTTPoison.post(body, [{"Content-Type", "text/xml; charset=utf-8"}], opts)
+    |> HTTPoison.post(body, opts)
   end
 
   defp log_request(url) do
