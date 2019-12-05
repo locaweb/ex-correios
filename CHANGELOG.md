@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
-- Support all the hackney options in the client.
+- Support proxy as an option.
 
 ### Removed
 - Remove `Correios CEP` library.

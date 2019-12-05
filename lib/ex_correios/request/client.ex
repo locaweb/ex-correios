@@ -27,5 +27,5 @@ defmodule ExCorreios.Request.Client do
     url
   end
 
-  defp allowed_opts(opts), do: Keyword.take(opts, [:hackney, :recv_timeout, :timeout])
+  defp allowed_opts(opts), do: Keyword.take(opts, [:proxy, :recv_timeout, :timeout])
 end

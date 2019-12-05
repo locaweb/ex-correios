@@ -16,7 +16,7 @@ defmodule ExCorreios.Address do
           street: String.t()
         }
 
-  @spec find(String.t(), keyword()) :: {:ok, __MODULE__.t()} | {:error, String.t()}
+  @spec find(String.t(), keyword()) :: {:ok, __MODULE__.t()} | {:error, atom()}
   def find(postal_code, opts \\ []) do
     opts
     |> address_url()
