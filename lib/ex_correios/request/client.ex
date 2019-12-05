@@ -11,14 +11,14 @@ defmodule ExCorreios.Request.Client do
   def get(url, opts \\ []) do
     url
     |> log_request()
-    |> HTTPoison.get([], opts)
+    |> HTTPoison.get([], allowed_opts(opts))
   end
 
   @spec post(String.t(), String.t(), keyword()) :: {:ok, Response.t()} | {:error, Error.t()}
   def post(url, body, opts \\ []) do
     url
     |> log_request()
-    |> HTTPoison.post(body, opts)
+    |> HTTPoison.post(body, allowed_opts(opts))
   end
 
   defp log_request(url) do
@@ -26,4 +26,6 @@ defmodule ExCorreios.Request.Client do
 
     url
   end
+
+  defp allowed_opts(opts), do: Keyword.take(opts, [:hackney, :recv_timeout, :timeout])
 end

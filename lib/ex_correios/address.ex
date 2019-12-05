@@ -20,7 +20,7 @@ defmodule ExCorreios.Address do
   def find(postal_code, opts \\ []) do
     opts
     |> address_url()
-    |> Client.post(Body.build(postal_code))
+    |> Client.post(Body.build(postal_code), opts)
     |> Response.process()
     |> build_address()
   end
