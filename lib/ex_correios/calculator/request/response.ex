@@ -38,7 +38,7 @@ defmodule ExCorreios.Calculator.Request.Response do
     ]
   end
 
-  defp parse_error_code("0"), do: nil
+  defp parse_error_code(error_code) when error_code in ["0", "009", "010", "011"], do: nil
   defp parse_error_code("-2"), do: :invalid_origin_postal_code
   defp parse_error_code("-3"), do: :invalid_destination_postal_code
   defp parse_error_code(error_code) when error_code in ["-4", "-888"], do: :exceeded_weight
