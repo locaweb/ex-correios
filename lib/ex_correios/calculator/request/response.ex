@@ -46,6 +46,7 @@ defmodule ExCorreios.Calculator.Request.Response do
 
   defp to_float(string) do
     string
+    |> String.replace(".", "")
     |> String.replace(",", ".")
     |> Float.parse()
     |> elem(0)
