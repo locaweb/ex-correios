@@ -25,9 +25,9 @@ Add the following config to your config.exs file:
 
 ```elixir
 config :ex_correios,
-  calculator_url: "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx"
-
-config :correios_cep, client: Correios.CEP.Client
+  address_url: "https://apps.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente",
+  calculator_url: "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx",
+  proxy: {"proxyhost.com", "8866"}
 ```
 
 ## Getting started
@@ -224,13 +224,13 @@ iex> ExCorreios.calculate([:pac, :sedex_hoje], package, shipping_params)
 
 3.3 - Options
 
-Available options and their default values:
+Available options:
 
 ```elixir
 [
   calculator_url: "http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx", # defined in the project config.
-  recv_timeout: 20_000, # timeout for establishing a TCP or SSL connection, in milliseconds.
-  timeout: 20_000 # timeout for receiving an HTTP response from the socket.
+  recv_timeout: 10_000, # timeout for establishing a TCP or SSL connection, in milliseconds.
+  timeout: 10_000 # timeout for receiving an HTTP response from the socket.
 ]
 ```
 
@@ -243,16 +243,26 @@ iex> ExCorreios.find_address("35588-000")
   %{
   city: "Arcos",
   complement: "",
-  neighborhood: "",
+  district: "",
+  postal_code: "35588000",
   state: "MG",
-  street: "",
-  postal_code: "35588000"
+  street: ""
   }}
 
 1.1 - Returns an error when postal code is invalid
 
 iex> ExCorreios.find_address("00000-000")
-{:error, %{reason: "CEP INVÁLIDO"}}
+{:error, :invalid_postal_code}
+
+1.2 - Available options:
+
+```elixir
+[
+  address_url: "https://apps.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente", # defined in the project config.
+  recv_timeout: 10_000, # timeout for establishing a TCP or SSL connection, in milliseconds.
+  timeout: 10_000 # timeout for receiving an HTTP response from the socket.
+]
+```
 
 ## Running tests
 

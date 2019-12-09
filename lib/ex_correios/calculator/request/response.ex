@@ -8,12 +8,12 @@ defmodule ExCorreios.Calculator.Request.Response do
   @root_path '//Servicos/cServico'
 
   @spec process({:ok, %HTTPoison.Response{}}) :: {:ok, list(struct)}
-  def process({:ok, %HTTPoison.Response{status_code: 200, body: body}}), do: {:ok, parser(body)}
+  def process({:ok, %HTTPoison.Response{status_code: 200, body: body}}), do: {:ok, parse(body)}
 
   @spec process({:error, %HTTPoison.Error{}}) :: {:error, String.t()}
   def process({:error, %HTTPoison.Error{reason: reason}}), do: {:error, reason}
 
-  defp parser(body) do
+  defp parse(body) do
     body
     |> xpath(%SweetXpath{path: @root_path, is_list: true}, shipping_path())
     |> List.first()
@@ -38,7 +38,7 @@ defmodule ExCorreios.Calculator.Request.Response do
     ]
   end
 
-  defp parse_error_code("0"), do: nil
+  defp parse_error_code(error_code) when error_code in ["0", "009", "010", "011"], do: nil
   defp parse_error_code("-2"), do: :invalid_origin_postal_code
   defp parse_error_code("-3"), do: :invalid_destination_postal_code
   defp parse_error_code(error_code) when error_code in ["-4", "-888"], do: :exceeded_weight

@@ -3,18 +3,8 @@ defmodule ExCorreios do
   This module provides a function to calculate shipping based on one or more services.
   """
 
-  alias Correios.CEP
-  alias ExCorreios.Calculator
+  alias ExCorreios.{Address, Calculator}
   alias ExCorreios.Calculator.Shipping.Package
-
-  @typep address :: %{
-           city: String.t(),
-           complement: String.t(),
-           neighborhood: String.t(),
-           postal_code: String.t(),
-           state: String.t(),
-           street: String.t()
-         }
 
   @doc """
   Calculate shipping based on one or more services.
@@ -70,8 +60,7 @@ defmodule ExCorreios do
   """
   @spec calculate(list(atom), %Package{}, map(), list(Keyword.t())) ::
           {:ok, list(map)} | {:error, atom()}
-  defdelegate calculate(services, package, params), to: Calculator
-  defdelegate calculate(services, package, params, opts), to: Calculator
+  defdelegate calculate(services, package, params, opts \\ []), to: Calculator
 
   @doc """
   Finds an address by a postal code.
@@ -83,25 +72,15 @@ defmodule ExCorreios do
          %{
            city: "Arcos",
            complement: "",
-           neighborhood: "",
+           district: "",
            postal_code: "35588-000",
            state: "MG",
            street: ""
          }}
 
       iex> ExCorreios.find_address("00000-000")
-      {:error, %{reason: "CEP INVÁLIDO"}}
+      {:error, :invalid_postal_code}
   """
-  @spec find_address(String.t()) :: {:ok, address()} | {:error, %{reason: String.t()}}
-  def find_address(postal_code), do: postal_code |> CEP.find_address() |> format_address()
-
-  defp format_address({:error, %{reason: reason}}), do: {:error, %{reason: reason}}
-
-  defp format_address({:ok, address}) do
-    {:ok,
-     address
-     |> Map.from_struct()
-     |> Map.delete(:zipcode)
-     |> Map.put(:postal_code, address.zipcode)}
-  end
+  @spec find_address(String.t(), keyword()) :: {:ok, Address.t()} | {:error, atom()}
+  defdelegate find_address(postal_code, opts \\ []), to: Address, as: :find
 end

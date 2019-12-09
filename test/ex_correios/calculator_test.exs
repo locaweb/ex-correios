@@ -5,7 +5,7 @@ defmodule ExCorreios.CalculatorTest do
 
   alias ExCorreios.Calculator
 
-  @fixture_path "test/support/fixtures"
+  @fixtures_path "test/support/fixtures/correios/calculator"
 
   describe "Calculator.calculate/4" do
     setup do
@@ -24,7 +24,7 @@ defmodule ExCorreios.CalculatorTest do
       params = %{destination: "05724005", origin: "08720030"}
 
       Bypass.expect(bypass, fn conn ->
-        correios_response = File.read!("#{@fixture_path}/correios_calculator_response.xml")
+        correios_response = File.read!("#{@fixtures_path}/success_response.xml")
 
         Plug.Conn.send_resp(conn, 200, correios_response)
       end)
