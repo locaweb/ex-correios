@@ -14,7 +14,7 @@ Add ExCorreios to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:ex_correios, git: "https://code.locaweb.com.br/criador-sites/ex-correios"}
+    {:ex_correios, git: "https://code.locaweb.com.br/locawebcommons/ex-correios"}
   ]
 end
 ```
@@ -267,7 +267,7 @@ iex> ExCorreios.find_address("00000-000")
 ## Running tests
 
 ```
-$ git clone https://code.locaweb.com.br/criador-sites/ex-correios.git
+$ git clone https://code.locaweb.com.br/locawebcommon/ex-correios.git
 $ cd ex-correios
 $ mix deps.get
 $ mix test --trace

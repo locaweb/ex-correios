@@ -1,4 +1,4 @@
-image: docker-registry.locaweb.com.br/stretch/elixir-dev:1.9
+image: docker-registry.locaweb.com.br/stretch/elixir-dev:1.10
 
 variables:
   MIX_ENV: test

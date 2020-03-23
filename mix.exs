@@ -5,7 +5,7 @@ defmodule ExCorreios.MixProject do
     [
       app: :ex_correios,
       version: "1.1.2",
-      elixir: "~> 1.9",
+      elixir: "~> 1.10",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps()
@@ -21,10 +21,10 @@ defmodule ExCorreios.MixProject do
   defp deps do
     [
       {:bypass, "~> 1.0", only: :test},
-      {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.1", only: [:dev, :test], runtime: false},
       {:ex_machina, "~> 2.3", only: :test},
       {:httpoison, "~> 1.5"},
-      {:sweet_xml, "~> 0.6.5"}
+      {:sweet_xml, "~> 0.6"}
     ]
   end
 
