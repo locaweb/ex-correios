@@ -14,7 +14,7 @@ Add ExCorreios to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:ex_correios, git: "https://code.locaweb.com.br/locawebcommons/ex-correios"}
+    {:ex_correios, "~> 1.1.2"}
   ]
 end
 ```
@@ -238,6 +238,7 @@ Available options:
 
 1 - Find an address by a valid postal code
 
+```elixir
 iex> ExCorreios.find_address("35588-000")
 {:ok,
   %{
@@ -248,6 +249,7 @@ iex> ExCorreios.find_address("35588-000")
   state: "MG",
   street: ""
   }}
+```
 
 1.1 - Returns an error when postal code is invalid
 
@@ -267,7 +269,7 @@ iex> ExCorreios.find_address("00000-000")
 ## Running tests
 
 ```
-$ git clone https://code.locaweb.com.br/locawebcommon/ex-correios.git
+$ git clone https://github.com/locaweb/ex-correios.git
 $ cd ex-correios
 $ mix deps.get
 $ mix test --trace
