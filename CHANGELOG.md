@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Changed
+- Use `travis CI` instead of `gitlab CI`.
 - Update `README.md`.
 - Update elixir version to [1.10](https://elixir-lang.org/blog/2020/01/27/elixir-v1-10-0-released/).
 
@@ -34,9 +35,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Create client to calculate shipping based on one or more services.
 
-[Unreleased]: https://code.locaweb.com.br/locawebcommon/ex-correios/compare/master...HEAD
-[1.1.2]: https://code.locaweb.com.br/locawebcommon/ex-correios/compare/v1.1.1...v1.1.2
-[1.1.1]: https://code.locaweb.com.br/locawebcommon/ex-correios/compare/v1.1.0...v1.1.1
-[1.1.0]: https://code.locaweb.com.br/locawebcommon/ex-correios/compare/v1.0.0...v1.1.0
-[1.0.0]: https://code.locaweb.com.br/locawebcommon/ex-correios/compare/v0.1.0...v1.0.0
-[0.1.0]: https://code.locaweb.com.br/locawebcommon/ex-correios/-/tags/v0.0.1
+[Unreleased]: https://github.com/locaweb/ex-correios/compare/master...HEAD
+[1.1.3]: https://github.com/locaweb/ex-correios/releases/tag/v1.1.3
