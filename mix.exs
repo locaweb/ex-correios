@@ -1,14 +1,25 @@
 defmodule ExCorreios.MixProject do
   use Mix.Project
 
+  @version "1.1.3"
+  @repo_url "https://github.com/locaweb/ex-correios"
+
   def project do
     [
       app: :ex_correios,
-      version: "1.1.3",
+      deps: deps(),
       elixir: "~> 1.10",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      version: @version,
+
+      # Hex
+      description: "Elixir client that integrates with Brazilian Correios API.",
+      package: package(),
+
+      # Docs
+      name: "ExCorreios",
+      docs: docs()
     ]
   end
 
@@ -25,6 +36,22 @@ defmodule ExCorreios.MixProject do
       {:ex_machina, "~> 2.3", only: :test},
       {:httpoison, "~> 1.5"},
       {:sweet_xml, "~> 0.6"}
+    ]
+  end
+
+  defp package do
+    [
+      maintainers: ["Locaweb"],
+      licenses: ["MIT"],
+      links: %{"GitHub" => @repo_url}
+    ]
+  end
+
+  defp docs do
+    [
+      main: "ExCorreios",
+      source_ref: "v#{@version}",
+      source_url: @repo_url
     ]
   end
 
