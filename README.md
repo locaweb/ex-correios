@@ -14,7 +14,7 @@ Add ExCorreios to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:ex_correios, "~> 1.1.2"}
+    {:ex_correios, "~> 1.1.3"}
   ]
 end
 ```
