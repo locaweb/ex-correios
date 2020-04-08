@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.1.4] - 2020-04-08
 ### Added
 - Publish lib to Hex.pm.
 - Add MIT license to the project.
@@ -42,4 +44,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Create client to calculate shipping based on one or more services.
 
 [Unreleased]: https://github.com/locaweb/ex-correios/compare/master...HEAD
+[1.1.4]: https://github.com/locaweb/ex-correios/compare/v1.1.3...v1.1.4
 [1.1.3]: https://github.com/locaweb/ex-correios/releases/tag/v1.1.3

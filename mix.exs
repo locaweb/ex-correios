@@ -1,7 +1,7 @@
 defmodule ExCorreios.MixProject do
   use Mix.Project
 
-  @version "1.1.3"
+  @version "1.1.4"
   @repo_url "https://github.com/locaweb/ex-correios"
 
   def project do
@@ -33,6 +33,7 @@ defmodule ExCorreios.MixProject do
     [
       {:bypass, "~> 1.0", only: :test},
       {:credo, "~> 1.1", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.21", only: :dev, runtime: false},
       {:ex_machina, "~> 2.3", only: :test},
       {:httpoison, "~> 1.5"},
       {:sweet_xml, "~> 0.6"}
