@@ -50,6 +50,7 @@ defmodule ExCorreios.MixProject do
 
   defp docs do
     [
+      extras: ["README.md", "LICENSE.txt", "CONTRIBUTING.md"],
       main: "ExCorreios",
       source_ref: "v#{@version}",
       source_url: @repo_url
